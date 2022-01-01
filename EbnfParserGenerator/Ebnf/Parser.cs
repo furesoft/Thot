@@ -5,8 +5,8 @@ namespace EbnfParserGenerator.Ebnf
     public class Parser
     {
         public readonly List<Message> Messages;
+        private readonly List<Token> _tokens;
         private int _position = 0;
-        private List<Token> _tokens;
 
         public Parser(List<Token> tokens, List<Message> messages)
         {
@@ -155,7 +155,7 @@ namespace EbnfParserGenerator.Ebnf
             return new AST.Expressions.CharacterClassExpression();
         }
 
-        private object RangeExpression()
+        private Expr RangeExpression()
         {
             throw new NotImplementedException();
         }

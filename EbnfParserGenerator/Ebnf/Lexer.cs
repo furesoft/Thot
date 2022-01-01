@@ -2,13 +2,9 @@
 {
     public class Lexer
     {
-        public List<Message> Messages = new List<Message>();
-        private int _column = 1;
-        private int _line = 1;
-        private int _position = 0;
-        private string _source;
+        public List<Message> Messages = new();
 
-        private Dictionary<char, TokenType> _symbolTokens = new()
+        private readonly Dictionary<char, TokenType> _symbolTokens = new()
         {
             [';'] = TokenType.Semicolon,
             ['?'] = TokenType.Question,
@@ -24,13 +20,18 @@
             ['-'] = TokenType.Minus,
         };
 
+        private int _column = 1;
+        private int _line = 1;
+        private int _position = 0;
+        private string _source;
+
         public List<Token> Tokenize(string source)
         {
             _source = source;
 
             var tokens = new List<Token>();
 
-            Token newToken = null;
+            Token newToken;
             do
             {
                 newToken = NextToken();
@@ -41,7 +42,7 @@
             return tokens;
         }
 
-        private char current()
+        private char Current()
         {
             if (_position >= _source.Length)
             {
@@ -60,19 +61,19 @@
 
             SkipWhitespaces();
 
-            if (this.current() == '\n' || this.current() == '\r')
+            if (this.Current() == '\n' || this.Current() == '\r')
             {
                 _line++;
                 _column = 1;
             }
 
-            if (_symbolTokens.ContainsKey(this.current()))
+            if (_symbolTokens.ContainsKey(this.Current()))
             {
-                return new Token(_symbolTokens[this.current()], this.current().ToString(), _position++, _position, _line, ++_column);
+                return new Token(_symbolTokens[this.Current()], this.Current().ToString(), _position++, _position, _line, ++_column);
             }
-            else if (this.current() == '-' && _source.Length >= 2)
+            else if (this.Current() == '-' && _source.Length >= 2)
             {
-                if (peek(1) == '>')
+                if (Peek(1) == '>')
                 {
                     return new Token(TokenType.GoesTo, "->", _position, ++_position, _line, ++_column);
                 }
@@ -81,12 +82,12 @@
                     ReportError();
                 }
             }
-            else if (this.current() == '\'')
+            else if (this.Current() == '\'')
             {
                 int oldpos = ++_position;
                 int oldColumn = _column;
 
-                while (peek() != '\'') //ToDo: add end of file check
+                while (Peek() != '\'') //ToDo: add end of file check
                 {
                     _position++;
                     _column++;
@@ -96,11 +97,11 @@
 
                 return new Token(TokenType.StringLiteral, _source.Substring(oldpos, _position - oldpos), oldpos - 1, ++_position, _line, oldColumn);
             }
-            else if (this.current() == '"')
+            else if (this.Current() == '"')
             {
                 int oldpos = ++_position;
                 int oldColumn = _column;
-                while (peek() != '"')
+                while (Peek() != '"')
                 {
                     _position++;
                     _column++;
@@ -110,11 +111,11 @@
 
                 return new Token(TokenType.StringLiteral, _source.Substring(oldpos, _position - oldpos), oldpos - 1, ++_position, _line, oldColumn);
             }
-            else if (char.IsDigit(this.current()))
+            else if (char.IsDigit(this.Current()))
             {
                 int oldpos = _position;
 
-                while (char.IsDigit(peek(0)))
+                while (char.IsDigit(Peek(0)))
                 {
                     _position++;
                 }
@@ -125,9 +126,9 @@
             {
                 int oldpos = _position;
 
-                if (char.IsLetter(this.current()))
+                if (char.IsLetter(this.Current()))
                 {
-                    while (char.IsLetterOrDigit(peek(0)))
+                    while (char.IsLetterOrDigit(Peek(0)))
                     {
                         _position++;
                     }
@@ -141,7 +142,7 @@
             return Token.Invalid;
         }
 
-        private char peek(int offset = 0)
+        private char Peek(int offset = 0)
         {
             if (_position >= _source.Length)
             {
@@ -153,13 +154,13 @@
 
         private void ReportError()
         {
-            Messages.Add(Message.Error($"Unknown Charackter '{current()}'", _line, _column++));
+            Messages.Add(Message.Error($"Unknown Charackter '{Current()}'", _line, _column++));
             _position++;
         }
 
         private void SkipWhitespaces()
         {
-            while (char.IsWhiteSpace(current()))
+            while (char.IsWhiteSpace(Current()))
             {
                 _position++;
                 _column++;

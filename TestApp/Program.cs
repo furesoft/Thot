@@ -8,7 +8,6 @@ public class Program
     {
         while (true)
         {
-            var lexer = new Lexer();
             var input = Console.ReadLine();
 
             var result = Parser.Parse(input);
