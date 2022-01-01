@@ -17,7 +17,8 @@
             ['+'] = TokenType.Plus,
             ['|'] = TokenType.Pipe,
             ['!'] = TokenType.Exclamation,
-            ['*'] = TokenType.Star
+            ['*'] = TokenType.Star,
+            ['→'] = TokenType.GoesTo
         };
 
         public List<Token> Tokenize(string source)
@@ -85,27 +86,25 @@
                     return new Token(TokenType.GoesTo, "->", _position, ++_position, _line);
                 }
             }
-            else if (this.current() == '"')
-            {
-                int oldpos = _position;
-                while (peek() != '"')
-                {
-                    _position++;
-                }
-                _position++;
-
-                return new Token(TokenType.StringLiteral, _source.Substring(oldpos, _position - (oldpos + 1)), oldpos - 1, ++_position, _line);
-            }
             else if (this.current() == '\'')
             {
-                int oldpos = _position;
+                int oldpos = ++_position;
                 while (peek() != '\'')
                 {
                     _position++;
                 }
-                _position++;
 
-                return new Token(TokenType.StringLiteral, _source.Substring(oldpos, _position - (oldpos + 1)), oldpos - 1, ++_position, _line);
+                return new Token(TokenType.StringLiteral, _source.Substring(oldpos, _position - oldpos), oldpos - 1, ++_position, _line);
+            }
+            else if (this.current() == '"')
+            {
+                int oldpos = ++_position;
+                while (peek() != '"')
+                {
+                    _position++;
+                }
+
+                return new Token(TokenType.StringLiteral, _source.Substring(oldpos, _position - oldpos), oldpos - 1, ++_position, _line);
             }
             else
             {
