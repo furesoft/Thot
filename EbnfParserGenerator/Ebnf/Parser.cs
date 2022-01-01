@@ -47,6 +47,13 @@ namespace EbnfParserGenerator.Ebnf
             return token;
         }
 
+        private Token Expect(TokenType type)
+        {
+            Match(type);
+
+            return Consume();
+        }
+
         private void ExpectKeyword(string name)
         {
             Token token = Peek();
@@ -104,8 +111,7 @@ namespace EbnfParserGenerator.Ebnf
         {
             var expr = ParseExpression();
 
-            Match(TokenType.CloseParen);
-            Consume();
+            Expect(TokenType.CloseParen);
 
             return new AST.Expressions.GroupExpr(expr);
         }
@@ -151,8 +157,7 @@ namespace EbnfParserGenerator.Ebnf
         {
             var expr = ParseRangeExpression();
 
-            Match(TokenType.CloseSquare);
-            Consume();
+            Expect(TokenType.CloseParen);
 
             return new AST.Expressions.CharacterClassExpression();
         }
@@ -164,11 +169,9 @@ namespace EbnfParserGenerator.Ebnf
 
         private ASTNode ParseRule()
         {
-            Match(TokenType.Identifier, out var nameToken);
-            Consume();
+            var nameToken = Expect(TokenType.Identifier);
 
-            Match(TokenType.GoesTo);
-            Consume();
+            Expect(TokenType.GoesTo);
 
             var expr = ParseExpression();
 
@@ -184,7 +187,12 @@ namespace EbnfParserGenerator.Ebnf
 
         private ASTNode ParseSubTypeSpec()
         {
-            throw new NotImplementedException();
+            // | typename(arg : type,...)
+            Match(TokenType.Pipe);
+            Consume();
+
+            Match(TokenType.Identifier);
+            var typename = Consume();
         }
 
         private ASTNode ParseTokenSpec()
@@ -223,8 +231,7 @@ namespace EbnfParserGenerator.Ebnf
         {
             var nameToken = Consume();
 
-            Match(TokenType.GoesTo);
-            Consume();
+            Expect(TokenType.GoesTo);
 
             var subtypes = new List<ASTNode>();
 
