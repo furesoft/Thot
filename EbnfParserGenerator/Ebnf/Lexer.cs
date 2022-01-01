@@ -2,6 +2,7 @@
 {
     public class Lexer
     {
+        public List<Message> Messages = new List<Message>();
         private int _column = 1;
         private int _line = 1;
         private int _position = 0;
@@ -47,18 +48,6 @@
             return _source[_position];
         }
 
-        private char next()
-        {
-            if (_position >= _source.Length)
-            {
-                return '\0';
-            }
-
-            _column++;
-
-            return _source[_position++];
-        }
-
         private Token? NextToken()
         {
             if (_position >= _source.Length)
@@ -78,11 +67,15 @@
             {
                 return new Token(_symbolTokens[this.current()], this.current().ToString(), _position++, _position, _line, ++_column);
             }
-            else if (this.current() == '-')
+            else if (this.current() == '-' && _source.Length >= 2)
             {
                 if (peek(1) == '>')
                 {
                     return new Token(TokenType.GoesTo, "->", _position, ++_position, _line, ++_column);
+                }
+                else
+                {
+                    ReportError();
                 }
             }
             else if (this.current() == '\'')
@@ -118,12 +111,17 @@
             {
                 int oldpos = _position;
 
-                while (char.IsLetterOrDigit(peek(0)))
+                if (char.IsLetter(this.current()))
                 {
-                    _position++;
+                    while (char.IsLetterOrDigit(peek(0)))
+                    {
+                        _position++;
+                    }
+
+                    return new Token(TokenType.Identifier, _source.Substring(oldpos, _position - oldpos), oldpos, _position, _line, _column);
                 }
 
-                return new Token(TokenType.Identifier, _source.Substring(oldpos, _position - oldpos), oldpos, _position, _line, _column);
+                ReportError();
             }
 
             return Token.Invalid;
@@ -137,6 +135,12 @@
             }
 
             return _source[_position + offset];
+        }
+
+        private void ReportError()
+        {
+            Messages.Add(Message.Error($"Unknown Charackter '{current()}'", _line, _column++));
+            _position++;
         }
 
         private void SkipWhitespaces()

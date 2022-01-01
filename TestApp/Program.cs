@@ -13,9 +13,12 @@ public class Program
 
             var tokens = lexer.Tokenize(input);
 
-            foreach (var token in tokens)
+            if (lexer.Messages.Any())
             {
-                Console.WriteLine(token.Type + ": " + token.Text);
+                foreach (var msg in lexer.Messages)
+                {
+                    Console.WriteLine(msg);
+                }
             }
 
             var parser = new Parser(tokens);
