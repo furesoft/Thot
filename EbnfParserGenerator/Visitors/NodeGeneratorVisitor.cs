@@ -5,7 +5,7 @@ using System.Text;
 
 namespace EbnfParserGenerator.Visitors
 {
-    public class IVisitorGeneratorVisitor : IVisitor<string>
+    public class NodeGeneratorVisitor : IVisitor<string>
     {
         public SourceText Text(ASTNode node)
         {
@@ -51,7 +51,6 @@ namespace EbnfParserGenerator.Visitors
         {
             var sb = new StringBuilder();
 
-            sb.AppendLine("public interface IVisitor<T> {");
             foreach (var node in block.Body)
             {
                 var visited = node.Accept(this);
@@ -61,8 +60,6 @@ namespace EbnfParserGenerator.Visitors
                     sb.AppendLine(visited);
                 }
             }
-
-            sb.AppendLine("}");
 
             return sb.ToString();
         }
@@ -111,14 +108,13 @@ namespace EbnfParserGenerator.Visitors
         {
             var sb = new StringBuilder();
 
-            foreach (var node in typeDeclaration.Block.Body)
-            {
-                var visited = node.Accept(this);
+            sb.AppendLine($"public abstract class {typeDeclaration.Name} {{");
+            sb.AppendLine("\tpublic abstract T Accept<T>(IVisitor<T> visitor);");
+            sb.AppendLine("}");
 
-                if (visited != null)
-                {
-                    sb.AppendLine(visited);
-                }
+            foreach (SubTypeDeclaration subType in typeDeclaration.Block.Body)
+            {
+                sb.AppendLine(GenerateSubType(subType, typeDeclaration.Name));
             }
 
             return sb.ToString();
@@ -126,9 +122,24 @@ namespace EbnfParserGenerator.Visitors
 
         public string Visit(SubTypeDeclaration subTypeDeclaration)
         {
+            return null;
+        }
+
+        private string GenerateSubType(SubTypeDeclaration subType, string name)
+        {
             var sb = new StringBuilder();
 
-            sb.AppendLine($"\tpublic T Visit<T>(IVisitor<T> {subTypeDeclaration.Name.FirstCharToLower()});");
+            sb.AppendLine($"public class {subType.Name} : {name} {{");
+
+            foreach (var prop in subType.Properties)
+            {
+                sb.AppendLine($"\tpublic {prop.type} {prop.name} {{get; set;}}");
+            }
+
+            sb.AppendLine("\tpublic override T Accept<T>(IVisitor<T> visitor) {");
+            sb.AppendLine("\t\treturn visitor.Visit(this);");
+            sb.AppendLine("\t}");
+            sb.AppendLine("}");
 
             return sb.ToString();
         }

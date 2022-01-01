@@ -20,7 +20,7 @@ public class Program
                 }
             }
 
-            Console.WriteLine(Tree.Accept(new EbnfParserGenerator.Visitors.TokenTypeEnumVisitor()));
+            Console.WriteLine(Tree.Accept(new EbnfParserGenerator.Visitors.IVisitorGeneratorVisitor()));
         }
     }
 }

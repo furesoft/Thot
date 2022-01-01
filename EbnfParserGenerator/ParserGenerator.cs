@@ -2,7 +2,6 @@
 using EbnfParserGenerator.Visitors;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
-using System.Text;
 
 namespace EbnfParserGenerator
 {
@@ -30,9 +29,9 @@ namespace EbnfParserGenerator
                     }
                     else
                     {
-                        context.AddSource(Path.GetFileName(file.Path) + "IVisitor.g.cs", new IVisitorGeneratorVisitor().Text(Tree));
-                        context.AddSource(Path.GetFileName(file.Path) + "TokenType.g.cs", new TokenTypeEnumVisitor().Text(Tree));
-                        context.AddSource(Path.GetFileName(file.Path) + "BaseNode.g.cs", SourceText.From(GenerateBaseNode(), Encoding.ASCII));
+                        context.AddSource("IVisitor.g.cs", new IVisitorGeneratorVisitor().Text(Tree));
+                        context.AddSource("TokenType.g.cs", new TokenTypeEnumVisitor().Text(Tree));
+                        context.AddSource("Nodes.g.cs", new NodeGeneratorVisitor().Text(Tree));
                     }
                 }
             }
@@ -40,17 +39,6 @@ namespace EbnfParserGenerator
 
         public void Initialize(GeneratorInitializationContext context)
         {
-        }
-
-        private string GenerateBaseNode()
-        {
-            var sb = new StringBuilder();
-
-            sb.AppendLine("public abstract class BaseNode {");
-            sb.AppendLine("\tpublic abstract T Accept<T>(IVisitor<T> visitor);");
-            sb.AppendLine("}");
-
-            return sb.ToString();
         }
     }
 }
