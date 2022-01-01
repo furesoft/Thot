@@ -2,8 +2,7 @@
 {
     public class Lexer
     {
-        private int _column;
-        private char _current;
+        private int _column = 1;
         private int _line = 1;
         private int _position = 0;
         private string _source;
@@ -72,39 +71,48 @@
             if (this.current() == '\n' || this.current() == '\r')
             {
                 _line++;
-                _column = 0;
+                _column = 1;
             }
 
             if (_symbolTokens.ContainsKey(this.current()))
             {
-                return new Token(_symbolTokens[this.current()], this.current().ToString(), _position++, _position + 1, _line);
+                return new Token(_symbolTokens[this.current()], this.current().ToString(), _position++, _position, _line, ++_column);
             }
             else if (this.current() == '-')
             {
-                if (peek() == '>')
+                if (peek(1) == '>')
                 {
-                    return new Token(TokenType.GoesTo, "->", _position, ++_position, _line);
+                    return new Token(TokenType.GoesTo, "->", _position, ++_position, _line, ++_column);
                 }
             }
             else if (this.current() == '\'')
             {
                 int oldpos = ++_position;
-                while (peek() != '\'')
+                int oldColumn = _column;
+
+                while (peek() != '\'') //ToDo: add end of file check
                 {
                     _position++;
+                    _column++;
                 }
 
-                return new Token(TokenType.StringLiteral, _source.Substring(oldpos, _position - oldpos), oldpos - 1, ++_position, _line);
+                _column += 2;
+
+                return new Token(TokenType.StringLiteral, _source.Substring(oldpos, _position - oldpos), oldpos - 1, ++_position, _line, oldColumn);
             }
             else if (this.current() == '"')
             {
                 int oldpos = ++_position;
+                int oldColumn = _column;
                 while (peek() != '"')
                 {
                     _position++;
+                    _column++;
                 }
 
-                return new Token(TokenType.StringLiteral, _source.Substring(oldpos, _position - oldpos), oldpos - 1, ++_position, _line);
+                _column += 2;
+
+                return new Token(TokenType.StringLiteral, _source.Substring(oldpos, _position - oldpos), oldpos - 1, ++_position, _line, oldColumn);
             }
             else
             {
@@ -115,7 +123,7 @@
                     _position++;
                 }
 
-                return new Token(TokenType.Identifier, _source.Substring(oldpos, _position - oldpos), oldpos, _position, _line);
+                return new Token(TokenType.Identifier, _source.Substring(oldpos, _position - oldpos), oldpos, _position, _line, _column);
             }
 
             return Token.Invalid;
@@ -136,6 +144,7 @@
             while (char.IsWhiteSpace(current()))
             {
                 _position++;
+                _column++;
             }
         }
     }

@@ -1,18 +1,17 @@
-﻿using EbnfParserGenerator;
-using EbnfParserGenerator.Ebnf;
-namespace EbnfParserGenerator.Ebnf
+﻿namespace EbnfParserGenerator.Ebnf
 {
     public class Token
     {
         public static Token? Invalid = new Token(TokenType.Invalid);
 
-        public Token(TokenType type, string text, int start, int end, int line)
+        public Token(TokenType type, string text, int start, int end, int line, int column)
         {
             Type = type;
             Text = text;
             Start = start;
             End = end;
             Line = line;
+            Column = column;
         }
 
         public Token(TokenType type)
@@ -20,9 +19,9 @@ namespace EbnfParserGenerator.Ebnf
             Type = type;
         }
 
+        public int Column { get; }
         public int End { get; set; }
         public int Line { get; set; }
-
         public int Start { get; set; }
         public string Text { get; set; }
 
