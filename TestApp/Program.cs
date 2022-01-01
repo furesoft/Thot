@@ -21,6 +21,8 @@ public class Program
             }
 
             Console.WriteLine(Tree);
+
+            new EbnfParserGenerator.Visitors.TokenTypeEnumVisitor();
         }
     }
 }
