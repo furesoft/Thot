@@ -57,12 +57,12 @@
 
         private Token? NextToken()
         {
+            SkipWhitespaces();
+
             if (_position >= _source.Length)
             {
                 return new Token(TokenType.EOF, "\0", _position, _position, _line, 0);
             }
-
-            SkipWhitespaces();
 
             if (this.Current() == '\n' || this.Current() == '\r')
             {
@@ -164,7 +164,7 @@
 
         private void SkipWhitespaces()
         {
-            while (char.IsWhiteSpace(Current()))
+            while (char.IsWhiteSpace(Current()) && _position <= _source.Length)
             {
                 _position++;
                 _column++;
