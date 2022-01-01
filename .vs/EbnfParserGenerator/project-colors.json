@@ -1,0 +1,16 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "f76b0a20-a857-4758-951f-e1c47215038f": {
+      "ProjectGuid": "f76b0a20-a857-4758-951f-e1c47215038f",
+      "DisplayName": "EbnfParserGenerator",
+      "ColorIndex": 0
+    },
+    "d98ffe25-c20b-4aec-9985-6dabbb52f6ee": {
+      "ProjectGuid": "d98ffe25-c20b-4aec-9985-6dabbb52f6ee",
+      "DisplayName": "TestApp",
+      "ColorIndex": 1
+    }
+  },
+  "NextColorIndex": 2
+}
