@@ -19,6 +19,7 @@
             [']'] = TokenType.CloseSquare,
             ['-'] = TokenType.Minus,
             ['@'] = TokenType.At,
+            [':'] = TokenType.Colon,
         };
 
         private int _column = 1;
