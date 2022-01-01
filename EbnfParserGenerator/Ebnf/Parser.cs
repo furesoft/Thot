@@ -59,30 +59,6 @@ namespace EbnfParserGenerator.Ebnf
             }
         }
 
-        private Expr Expression()
-        {
-            var expr = Unary();
-
-            while (PeekMatch(TokenType.Pipe))
-            {
-                var right = Expression();
-
-                expr = new AlternateNode(expr, right);
-            }
-
-            return expr;
-        }
-
-        private Expr Group()
-        {
-            var expr = Expression();
-
-            Match(TokenType.CloseParen);
-            Consume();
-
-            return new AST.Expressions.GroupExpr(expr);
-        }
-
         private bool Match(TokenType type)
         {
             Token token = Peek();
@@ -110,70 +86,54 @@ namespace EbnfParserGenerator.Ebnf
             return cond;
         }
 
-        private Expr NameExpr()
+        private Expr ParseExpression()
+        {
+            var expr = ParseUnary();
+
+            while (PeekMatch(TokenType.Pipe))
+            {
+                var right = ParseExpression();
+
+                expr = new AlternateNode(expr, right);
+            }
+
+            return expr;
+        }
+
+        private Expr ParseGroup()
+        {
+            var expr = ParseExpression();
+
+            Match(TokenType.CloseParen);
+            Consume();
+
+            return new AST.Expressions.GroupExpr(expr);
+        }
+
+        private Expr ParseNameExpr()
         {
             return new AST.Expressions.NameExpression(Previous().Text);
         }
 
-        private ASTNode ParseTokenSpecDefinition()
-        {
-            _position--;
-
-            var node = new TokenSpecNode((RuleNode)Rule());
-
-            _position--;
-
-            return node;
-        }
-
-        private ASTNode ParseTokenSymbolSpec()
-        {
-            return new TokenSymbolNode(Previous().Text);
-        }
-
-        private Token Peek(int offset = 1)
-        {
-            if (_position + offset >= _tokens.Count)
-            {
-                return new Token(TokenType.EOF);
-            }
-
-            return _tokens[_position];
-        }
-
-        private bool PeekMatch(TokenType type)
-        {
-            if (_position >= _tokens.Count) return false;
-
-            return _tokens[_position - 1].Type == type;
-        }
-
-        private Token Previous()
-        {
-            if (_position >= _tokens.Count) return _tokens[_tokens.Count - 1];
-
-            return _tokens[_position - 1];
-        }
-
-        private Expr Primary()
+        private Expr ParsePrimary()
         {
             var token = Consume();
 
             if (token.Type == TokenType.StringLiteral)
             {
-                return StringLiteral();
+                return ParseStringLiteral();
             }
             else if (token.Type == TokenType.OpenParen)
             {
-                return Group();
+                return ParseGroup();
             }
             else if (token.Type == TokenType.OpenSquare)
             {
-                return Range();
+                return ParseRange();
             }
             else if (token.Type == TokenType.Identifier)
             {
-                return NameExpr();
+                return ParseNameExpr();
             }
             else
             {
@@ -183,37 +143,13 @@ namespace EbnfParserGenerator.Ebnf
             return new InvalidExpr();
         }
 
-        private Block ProgramUnits()
-        {
-            var result = new List<ASTNode>();
-
-            while (Peek(0).Type != (TokenType.EOF))
-            {
-                var token = Consume();
-
-                if (token.Type == TokenType.At)
-                {
-                    result.Add(TokenSpec());
-                }
-                else
-                {
-                    result.Add(Rule());
-                }
-
-                Match(TokenType.Semicolon);
-                Consume();
-            }
-
-            return new Block(result);
-        }
-
         //[_"k]
         //[a-z]
         //[a-Z0-9]
         //[_a-z0-9]
-        private Expr Range() //ToDo: implement Range Expression
+        private Expr ParseRange() //ToDo: implement Range Expression
         {
-            var expr = RangeExpression();
+            var expr = ParseRangeExpression();
 
             Match(TokenType.CloseSquare);
             Consume();
@@ -221,12 +157,12 @@ namespace EbnfParserGenerator.Ebnf
             return new AST.Expressions.CharacterClassExpression();
         }
 
-        private Expr RangeExpression()
+        private Expr ParseRangeExpression()
         {
             throw new NotImplementedException();
         }
 
-        private ASTNode Rule()
+        private ASTNode ParseRule()
         {
             Match(TokenType.Identifier, out var nameToken);
             Consume();
@@ -234,19 +170,24 @@ namespace EbnfParserGenerator.Ebnf
             Match(TokenType.GoesTo);
             Consume();
 
-            var expr = Expression();
+            var expr = ParseExpression();
 
             return new RuleNode(nameToken.Text, new List<Expr> { expr });
         }
 
-        private Expr StringLiteral()
+        private Expr ParseStringLiteral()
         {
             var token = Previous();
 
             return new AST.Expressions.LiteralNode(token.Text);
         }
 
-        private ASTNode TokenSpec()
+        private ASTNode ParseSubTypeSpec()
+        {
+            throw new NotImplementedException();
+        }
+
+        private ASTNode ParseTokenSpec()
         {
             ExpectKeyword("token");
 
@@ -262,9 +203,43 @@ namespace EbnfParserGenerator.Ebnf
             }
         }
 
-        private Expr Unary()
+        private ASTNode ParseTokenSpecDefinition()
         {
-            var expr = Primary();
+            _position--;
+
+            var node = new TokenSpecNode((RuleNode)ParseRule());
+
+            _position--;
+
+            return node;
+        }
+
+        private ASTNode ParseTokenSymbolSpec()
+        {
+            return new TokenSymbolNode(Previous().Text);
+        }
+
+        private ASTNode ParseTypeSpec()
+        {
+            var nameToken = Consume();
+
+            Match(TokenType.GoesTo);
+            Consume();
+
+            var subtypes = new List<ASTNode>();
+
+            //ParseSubTypes until peek ;
+            while (Peek().Type != TokenType.Semicolon)
+            {
+                subtypes.Add(ParseSubTypeSpec());
+            }
+
+            return null;
+        }
+
+        private Expr ParseUnary()
+        {
+            var expr = ParsePrimary();
 
             var token = Consume();
 
@@ -286,6 +261,63 @@ namespace EbnfParserGenerator.Ebnf
             }
 
             return expr;
+        }
+
+        private Token Peek(int offset = 1)
+        {
+            if (_position + offset >= _tokens.Count)
+            {
+                return new Token(TokenType.EOF);
+            }
+
+            return _tokens[_position + offset];
+        }
+
+        private bool PeekMatch(TokenType type)
+        {
+            if (_position >= _tokens.Count) return false;
+
+            return _tokens[_position - 1].Type == type;
+        }
+
+        private Token Previous()
+        {
+            if (_position >= _tokens.Count) return _tokens[_tokens.Count - 1];
+
+            return _tokens[_position - 1];
+        }
+
+        private Block ProgramUnits()
+        {
+            var result = new List<ASTNode>();
+
+            while (Peek(0).Type != (TokenType.EOF))
+            {
+                var token = Consume();
+
+                if (token.Type == TokenType.At)
+                {
+                    var keyword = Consume();
+
+                    if (keyword.Type == TokenType.Identifier && keyword.Text == "token")
+                    {
+                        result.Add(ParseTokenSpec());
+                    }
+                    else if (keyword.Type == TokenType.Identifier && keyword.Text == "type")
+                    {
+                        result.Add(ParseTypeSpec());
+                    }
+                }
+                else
+                {
+                    result.Add(ParseRule());
+                }
+
+                Match(TokenType.Semicolon);
+                Consume();
+            }
+
+            return new Block(result);
         }
     }
 }

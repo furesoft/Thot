@@ -21,5 +21,6 @@ namespace EbnfParserGenerator.Ebnf
         Minus,
         Number,
         At,
+        Colon,
     }
 }
