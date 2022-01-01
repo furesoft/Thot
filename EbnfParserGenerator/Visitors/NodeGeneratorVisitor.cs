@@ -14,37 +14,37 @@ namespace EbnfParserGenerator.Visitors
 
         public string Visit(RuleNode rule)
         {
-            return null;
+            return string.Empty;
         }
 
         public string Visit(InvalidNode invalidNode)
         {
-            return null;
+            return string.Empty;
         }
 
         public string Visit(LiteralNode literal)
         {
-            return null;
+            return string.Empty;
         }
 
         public string Visit(CharacterClassExpression charackterClassExpression)
         {
-            return null;
+            return string.Empty;
         }
 
         public string Visit(InvalidExpr invalidExpr)
         {
-            return null;
+            return string.Empty;
         }
 
         public string Visit(GroupExpr groupExpr)
         {
-            return null;
+            return string.Empty;
         }
 
         public string Visit(TokenSymbolNode tokenSymbolNode)
         {
-            return null;
+            return string.Empty;
         }
 
         public string Visit(Block block)
@@ -55,7 +55,7 @@ namespace EbnfParserGenerator.Visitors
             {
                 var visited = node.Accept(this);
 
-                if (visited != null)
+                if (visited != string.Empty)
                 {
                     sb.AppendLine(visited);
                 }
@@ -66,47 +66,49 @@ namespace EbnfParserGenerator.Visitors
 
         public string Visit(OptionalExpression optionalExpression)
         {
-            return null;
+            return string.Empty;
         }
 
         public string Visit(NameExpression nameExpression)
         {
-            return null;
+            return string.Empty;
         }
 
         public string Visit(ZeroOrMoreExpression zeroOrMoreExpression)
         {
-            return null;
+            return string.Empty;
         }
 
         public string Visit(CharackterClassRange charackterClassRange)
         {
-            return null;
+            return string.Empty;
         }
 
         public string Visit(OneOrMoreExpression oneOrMoreExpression)
         {
-            return null;
+            return string.Empty;
         }
 
         public string Visit(AlternateNode alternateNode)
         {
-            return null;
+            return string.Empty;
         }
 
         public string Visit(NotExpression notExpression)
         {
-            return null;
+            return string.Empty;
         }
 
         public string Visit(TokenSpecNode tokenSpecNode)
         {
-            return null;
+            return string.Empty;
         }
 
         public string Visit(TypeDeclaration typeDeclaration)
         {
             var sb = new StringBuilder();
+
+            sb.AppendLine($"namespace Parsing.AST;");
 
             sb.AppendLine($"public abstract class {typeDeclaration.Name} {{");
             sb.AppendLine("\tpublic abstract T Accept<T>(IVisitor<T> visitor);");
@@ -122,7 +124,7 @@ namespace EbnfParserGenerator.Visitors
 
         public string Visit(SubTypeDeclaration subTypeDeclaration)
         {
-            return null;
+            return string.Empty;
         }
 
         private string GenerateSubType(SubTypeDeclaration subType, string name)
@@ -133,11 +135,11 @@ namespace EbnfParserGenerator.Visitors
 
             foreach (var prop in subType.Properties)
             {
-                sb.AppendLine($"\tpublic {prop.type} {prop.name} {{get; set;}}");
+                sb.AppendLine($"\tpublic {prop.type} {prop.name} {{ get; set; }}");
             }
 
             sb.AppendLine("\tpublic override T Accept<T>(IVisitor<T> visitor) {");
-            sb.AppendLine("\t\treturn visitor.Visit(this);");
+            sb.AppendLine($"\t\treturn visitor.Visit<T>(this);");
             sb.AppendLine("\t}");
             sb.AppendLine("}");
 

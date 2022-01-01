@@ -2,7 +2,7 @@
 {
     public enum MessageSeverity
     {
-        Error, Warning, Info
+        Error, Warning, Info, Hint
     }
 
     public class Message

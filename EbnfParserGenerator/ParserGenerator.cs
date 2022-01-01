@@ -2,6 +2,8 @@
 using EbnfParserGenerator.Visitors;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
+using System.Reflection;
+using System.Text;
 
 namespace EbnfParserGenerator
 {
@@ -32,6 +34,7 @@ namespace EbnfParserGenerator
                         context.AddSource("IVisitor.g.cs", new IVisitorGeneratorVisitor().Text(Tree));
                         context.AddSource("TokenType.g.cs", new TokenTypeEnumVisitor().Text(Tree));
                         context.AddSource("Nodes.g.cs", new NodeGeneratorVisitor().Text(Tree));
+                        context.AddSource("Message.g.cs", LoadFromResource<Message>("Parsing"));
                     }
                 }
             }
@@ -39,6 +42,17 @@ namespace EbnfParserGenerator
 
         public void Initialize(GeneratorInitializationContext context)
         {
+        }
+
+        private static SourceText LoadFromResource<T>(string newNamespace)
+        {
+            Type type = typeof(T);
+
+            string text = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream(type.Namespace + $".{typeof(T).Name}.cs")).ReadToEnd();
+
+            text = text.Replace($"namespace {type.Namespace};", $"namespace {newNamespace};");
+
+            return SourceText.From(text, Encoding.ASCII);
         }
     }
 }

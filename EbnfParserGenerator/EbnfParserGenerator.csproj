@@ -3,14 +3,14 @@
   <PropertyGroup>
 	  <TargetFramework>netstandard2.0</TargetFramework>
 	  <LangVersion>latest</LangVersion>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+	<ImplicitUsings>enable</ImplicitUsings>
+	<Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="bin\**" />
-    <EmbeddedResource Remove="bin\**" />
-    <None Remove="bin\**" />
+	<Compile Remove="bin\**" />
+	<EmbeddedResource Remove="bin\**" />
+	<None Remove="bin\**" />
   </ItemGroup>
 
 	<ItemGroup>
@@ -26,6 +26,8 @@
 
 	<ItemGroup>
 	  <None Remove="bin\Debug\netstandard2.0\\EbnfParserGenerator.dll" />
+
+		<EmbeddedResource Include="Ebnf\Message.cs" />
 	</ItemGroup>
 
 	<ItemGroup>

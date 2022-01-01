@@ -51,6 +51,11 @@ namespace EbnfParserGenerator.Visitors
         {
             var sb = new StringBuilder();
 
+            sb.AppendLine("using Parsing.AST;");
+            sb.AppendLine("");
+            sb.AppendLine("namespace Parsing;");
+            sb.AppendLine("");
+
             sb.AppendLine("public interface IVisitor<T> {");
             foreach (var node in block.Body)
             {
@@ -128,7 +133,7 @@ namespace EbnfParserGenerator.Visitors
         {
             var sb = new StringBuilder();
 
-            sb.AppendLine($"\tpublic T Visit<T>(IVisitor<T> {subTypeDeclaration.Name.FirstCharToLower()});");
+            sb.AppendLine($"\tT Visit<T>({subTypeDeclaration.Name} {subTypeDeclaration.Name.FirstCharToLower()});");
 
             return sb.ToString();
         }

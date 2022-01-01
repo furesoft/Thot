@@ -61,6 +61,9 @@ namespace EbnfParserGenerator.Visitors
         {
             var sb = new StringBuilder();
 
+            sb.AppendLine("namespace Parsing;");
+            sb.AppendLine();
+
             sb.AppendLine("public enum TokenType {");
             foreach (var node in block.Body)
             {
