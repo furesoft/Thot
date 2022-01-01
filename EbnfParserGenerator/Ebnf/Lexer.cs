@@ -18,7 +18,10 @@
             ['|'] = TokenType.Pipe,
             ['!'] = TokenType.Exclamation,
             ['*'] = TokenType.Star,
-            ['→'] = TokenType.GoesTo
+            ['→'] = TokenType.GoesTo,
+            ['['] = TokenType.OpenSquare,
+            [']'] = TokenType.CloseSquare,
+            ['-'] = TokenType.Minus,
         };
 
         public List<Token> Tokenize(string source)
@@ -106,6 +109,17 @@
                 _column += 2;
 
                 return new Token(TokenType.StringLiteral, _source.Substring(oldpos, _position - oldpos), oldpos - 1, ++_position, _line, oldColumn);
+            }
+            else if (char.IsDigit(this.current()))
+            {
+                int oldpos = _position;
+
+                while (char.IsDigit(peek(0)))
+                {
+                    _position++;
+                }
+
+                return new Token(TokenType.Number, _source.Substring(oldpos, _position - oldpos), oldpos, _position, _line, _column);
             }
             else
             {

@@ -16,5 +16,9 @@ namespace EbnfParserGenerator.Ebnf
         Pipe,
         Semicolon,
         Exclamation,
+        CloseSquare,
+        OpenSquare,
+        Minus,
+        Number,
     }
 }

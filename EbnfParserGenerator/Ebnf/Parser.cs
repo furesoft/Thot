@@ -123,12 +123,30 @@ namespace EbnfParserGenerator.Ebnf
             {
                 return Group();
             }
+            else if (token.Type == TokenType.OpenSquare)
+            {
+                return Range();
+            }
             else if (token.Type == TokenType.Identifier)
             {
                 return NameExpr();
             }
 
             return null;
+        }
+
+        //[_"k]
+        //[a-z]
+        //[a-Z0-9]
+        //[_a-z0-9]
+        private Expr Range()
+        {
+            var expr = Expression();
+
+            Match(TokenType.CloseSquare);
+            Consume();
+
+            return new AST.Expressions.GroupExpr(expr);
         }
 
         private Expr Unary()
