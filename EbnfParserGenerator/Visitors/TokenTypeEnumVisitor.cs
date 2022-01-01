@@ -12,6 +12,16 @@ namespace EbnfParserGenerator.Visitors
             return SourceText.From(node.Accept(this), Encoding.ASCII);
         }
 
+        public string Visit(TypeDeclaration typeDeclaration)
+        {
+            return null;
+        }
+
+        public string Visit(SubTypeDeclaration subTypeDeclaration)
+        {
+            return null;
+        }
+
         public string Visit(RuleNode rule)
         {
             return null;

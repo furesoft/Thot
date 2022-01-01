@@ -188,11 +188,35 @@ namespace EbnfParserGenerator.Ebnf
         private ASTNode ParseSubTypeSpec()
         {
             // | typename(arg : type,...)
-            Match(TokenType.Pipe);
-            Consume();
+            Expect(TokenType.Pipe);
 
-            Match(TokenType.Identifier);
-            var typename = Consume();
+            var typename = Expect(TokenType.Identifier);
+
+            var properties = new List<(string name, string type)>();
+
+            Expect(TokenType.OpenParen);
+
+            while (Peek().Type != TokenType.Semicolon)
+            {
+                var name = Expect(TokenType.Identifier);
+                Expect(TokenType.Colon);
+                var type = Expect(TokenType.Identifier);
+
+                properties.Add((name.Text, type.Text));
+
+                if (Peek(0).Type == TokenType.CloseParen)
+                {
+                    break;
+                }
+                else
+                {
+                    Expect(TokenType.Comma);
+                }
+            }
+
+            Expect(TokenType.CloseParen);
+
+            return new SubTypeDeclaration(typename.Text, properties);
         }
 
         private ASTNode ParseTokenSpec()
@@ -236,12 +260,12 @@ namespace EbnfParserGenerator.Ebnf
             var subtypes = new List<ASTNode>();
 
             //ParseSubTypes until peek ;
-            while (Peek().Type != TokenType.Semicolon)
+            while (Peek(0).Type != TokenType.Semicolon)
             {
                 subtypes.Add(ParseSubTypeSpec());
             }
 
-            return null;
+            return new TypeDeclaration(nameToken.Text, new Block(subtypes));
         }
 
         private Expr ParseUnary()
@@ -320,8 +344,7 @@ namespace EbnfParserGenerator.Ebnf
                     result.Add(ParseRule());
                 }
 
-                Match(TokenType.Semicolon);
-                Consume();
+                Expect(TokenType.Semicolon);
             }
 
             return new Block(result);

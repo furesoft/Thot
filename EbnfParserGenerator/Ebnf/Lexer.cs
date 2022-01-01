@@ -20,6 +20,7 @@
             ['-'] = TokenType.Minus,
             ['@'] = TokenType.At,
             [':'] = TokenType.Colon,
+            [','] = TokenType.Comma,
         };
 
         private int _column = 1;

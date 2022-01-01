@@ -22,5 +22,6 @@ namespace EbnfParserGenerator.Ebnf
         Number,
         At,
         Colon,
+        Comma,
     }
 }

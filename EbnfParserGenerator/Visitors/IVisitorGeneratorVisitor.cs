@@ -106,5 +106,15 @@ namespace EbnfParserGenerator.Visitors
         {
             return null;
         }
+
+        public string Visit(TypeDeclaration typeDeclaration)
+        {
+            return null;
+        }
+
+        public string Visit(SubTypeDeclaration subTypeDeclaration)
+        {
+            return null;
+        }
     }
 }
