@@ -54,7 +54,7 @@ namespace EbnfParserGenerator.Visitors
             sb.AppendLine("public enum TokenType {");
             foreach (var node in block.Body)
             {
-                var visited = Visit((TokenSymbolNode)node);
+                var visited = node.Accept(this);
 
                 if (visited != null)
                 {
@@ -104,12 +104,7 @@ namespace EbnfParserGenerator.Visitors
 
         public string Visit(TokenSpecNode tokenSpecNode)
         {
-            return null;
-        }
-
-        public string Visit(ASTNode node)
-        {
-            return null;
+            return tokenSpecNode.Rule.Name.FirstCharToUpper();
         }
     }
 }

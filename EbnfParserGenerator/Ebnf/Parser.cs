@@ -117,7 +117,13 @@ namespace EbnfParserGenerator.Ebnf
 
         private ASTNode ParseTokenSpecDefinition()
         {
-            return null; //ToDo: implement token spec
+            _position--;
+
+            var node = new TokenSpecNode((RuleNode)Rule());
+
+            _position--;
+
+            return node;
         }
 
         private ASTNode ParseTokenSymbolSpec()

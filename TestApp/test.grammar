@@ -1,2 +1,4 @@
 ﻿@token "fun";
 @token "def";
+
+@token identifier -> "a";
