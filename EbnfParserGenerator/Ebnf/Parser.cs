@@ -51,9 +51,8 @@ namespace EbnfParserGenerator.Ebnf
         {
             var expr = Unary();
 
-            while (Match(TokenType.Pipe))
+            while (PeekMatch(TokenType.Pipe))
             {
-                var op = Previous();
                 var right = Expression();
 
                 expr = new AlternateNode(expr, right);
@@ -72,27 +71,21 @@ namespace EbnfParserGenerator.Ebnf
             return new AST.Expressions.GroupExpr(expr);
         }
 
-        private Expr Literal()
-        {
-            var token = Previous();
-
-            if (token.Type == TokenType.StringLiteral)
-            {
-                return new AST.Expressions.LiteralNode(token.Text);
-            }
-
-            return null;
-        }
-
         private bool Match(TokenType type)
         {
-            return Previous().Type == type;
+            Token token = Previous();
+            var cond = token.Type == type;
+
+            if (!cond)
+            {
+                Messages.Add(Message.Error($"Expected {type} but got {token.Type}", token.Line, token.Column));
+            }
+
+            return cond;
         }
 
         private Expr NameExpr()
         {
-            if (Previous().Type != TokenType.Identifier) return null;
-
             return new AST.Expressions.NameExpression(Previous().Text);
         }
 
@@ -106,8 +99,17 @@ namespace EbnfParserGenerator.Ebnf
             return _tokens[_position];
         }
 
+        private bool PeekMatch(TokenType type)
+        {
+            if (_position >= _tokens.Count) return false;
+
+            return _tokens[_position].Type == type;
+        }
+
         private Token Previous()
         {
+            if (_position >= _tokens.Count) return _tokens[_tokens.Count - 1];
+
             return _tokens[_position - 1];
         }
 
@@ -117,7 +119,7 @@ namespace EbnfParserGenerator.Ebnf
 
             if (token.Type == TokenType.StringLiteral)
             {
-                return Literal();
+                return StringLiteral();
             }
             else if (token.Type == TokenType.OpenParen)
             {
@@ -131,22 +133,38 @@ namespace EbnfParserGenerator.Ebnf
             {
                 return NameExpr();
             }
+            else
+            {
+                Messages.Add(Message.Error($"Unknown Expression {token.Text}", token.Line, token.Column));
+            }
 
-            return null;
+            return new InvalidExpr();
         }
 
         //[_"k]
         //[a-z]
         //[a-Z0-9]
         //[_a-z0-9]
-        private Expr Range()
+        private Expr Range() //ToDo: implement Range Expression
         {
-            var expr = Expression();
+            var expr = RangeExpression();
 
             Match(TokenType.CloseSquare);
             Consume();
 
-            return new AST.Expressions.GroupExpr(expr);
+            return new AST.Expressions.CharacterClassExpression();
+        }
+
+        private object RangeExpression()
+        {
+            throw new NotImplementedException();
+        }
+
+        private Expr StringLiteral()
+        {
+            var token = Previous();
+
+            return new AST.Expressions.LiteralNode(token.Text);
         }
 
         private Expr Unary()
@@ -170,6 +188,10 @@ namespace EbnfParserGenerator.Ebnf
             else if (token.Type == TokenType.Exclamation)
             {
                 return new AST.Expressions.NotExpression(expr);
+            }
+            else
+            {
+                Messages.Add(Message.Error($"Unknown Unary Operator {token.Text}", token.Line, token.Column));
             }
 
             return expr;

@@ -9,6 +9,7 @@ namespace EbnfParserGenerator.Ebnf.AST
         T Visit(InvalidNode invalidNode);
         T Visit(LiteralNode literal);
         T Visit(CharacterClassExpression charackterClassExpression);
+        T Visit(InvalidExpr invalidExpr);
         T Visit(GroupExpr groupExpr);
         T Visit(OptionalExpression optionalExpression);
         T Visit(NameExpression nameExpression);

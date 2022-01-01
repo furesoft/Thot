@@ -2,6 +2,12 @@
 {
     public class CharackterClassRange : Expr
     {
+        public CharackterClassRange(char from, char to)
+        {
+            From = from;
+            To = to;
+        }
+
         public char From { get; set; }
         public char To { get; set; }
 
