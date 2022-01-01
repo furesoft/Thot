@@ -1,1 +1,9 @@
-﻿
+﻿gv5@token "fun";
+@token "def";
+
+@token identifier -> "a";
+
+@type Expr ->
+    | Literal(value : object)
+    | Binar(left : Expr, operator : string, right : Expr)
+    | Group(inner : Expr);
