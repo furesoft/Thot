@@ -35,5 +35,7 @@ namespace EbnfParserGenerator.Ebnf.AST
         T Visit(NotExpression notExpression);
 
         T Visit(TokenSpecNode tokenSpecNode);
+
+        T Visit(ASTNode node);
     }
 }

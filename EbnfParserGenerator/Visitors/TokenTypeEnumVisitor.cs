@@ -1,90 +1,113 @@
 ﻿using EbnfParserGenerator.Ebnf.AST;
 using EbnfParserGenerator.Ebnf.AST.Expressions;
+using Microsoft.CodeAnalysis.Text;
+using System.Text;
 
 namespace EbnfParserGenerator.Visitors
 {
-    public class TokenTypeEnumVisitor : IVisitor<ASTNode>
+    public class TokenTypeEnumVisitor : IVisitor<string>
     {
-        public TokenTypeEnumVisitor()
+        public SourceText Text(ASTNode node)
         {
+            return SourceText.From(node.Accept(this), Encoding.ASCII);
         }
 
-        public ASTNode Visit(RuleNode rule)
-        {
-            return null;
-        }
-
-        public ASTNode Visit(InvalidNode invalidNode)
+        public string Visit(RuleNode rule)
         {
             return null;
         }
 
-        public ASTNode Visit(LiteralNode literal)
+        public string Visit(InvalidNode invalidNode)
         {
             return null;
         }
 
-        public ASTNode Visit(CharacterClassExpression charackterClassExpression)
+        public string Visit(LiteralNode literal)
         {
             return null;
         }
 
-        public ASTNode Visit(InvalidExpr invalidExpr)
+        public string Visit(CharacterClassExpression charackterClassExpression)
         {
             return null;
         }
 
-        public ASTNode Visit(GroupExpr groupExpr)
+        public string Visit(InvalidExpr invalidExpr)
         {
             return null;
         }
 
-        public ASTNode Visit(TokenSymbolNode tokenSymbolNode)
+        public string Visit(GroupExpr groupExpr)
         {
             return null;
         }
 
-        public ASTNode Visit(Block block)
+        public string Visit(TokenSymbolNode tokenSymbolNode)
         {
-            throw new NotImplementedException();
+            return tokenSymbolNode.Name;
         }
 
-        public ASTNode Visit(OptionalExpression optionalExpression)
+        public string Visit(Block block)
         {
-            return null;
+            var sb = new StringBuilder();
+
+            sb.AppendLine("public enum TokenType {");
+            foreach (var node in block.Body)
+            {
+                var visited = Visit((TokenSymbolNode)node);
+
+                if (visited != null)
+                {
+                    sb.AppendLine("\t" + visited + ",");
+                }
+            }
+
+            sb.AppendLine("}");
+
+            return sb.ToString();
         }
 
-        public ASTNode Visit(NameExpression nameExpression)
-        {
-            return null;
-        }
-
-        public ASTNode Visit(ZeroOrMoreExpression zeroOrMoreExpression)
-        {
-            return null;
-        }
-
-        public ASTNode Visit(CharackterClassRange charackterClassRange)
-        {
-            return null;
-        }
-
-        public ASTNode Visit(OneOrMoreExpression oneOrMoreExpression)
-        {
-            return null;
-        }
-
-        public ASTNode Visit(AlternateNode alternateNode)
+        public string Visit(OptionalExpression optionalExpression)
         {
             return null;
         }
 
-        public ASTNode Visit(NotExpression notExpression)
+        public string Visit(NameExpression nameExpression)
         {
             return null;
         }
 
-        public ASTNode Visit(TokenSpecNode tokenSpecNode)
+        public string Visit(ZeroOrMoreExpression zeroOrMoreExpression)
+        {
+            return null;
+        }
+
+        public string Visit(CharackterClassRange charackterClassRange)
+        {
+            return null;
+        }
+
+        public string Visit(OneOrMoreExpression oneOrMoreExpression)
+        {
+            return null;
+        }
+
+        public string Visit(AlternateNode alternateNode)
+        {
+            return null;
+        }
+
+        public string Visit(NotExpression notExpression)
+        {
+            return null;
+        }
+
+        public string Visit(TokenSpecNode tokenSpecNode)
+        {
+            return null;
+        }
+
+        public string Visit(ASTNode node)
         {
             return null;
         }
