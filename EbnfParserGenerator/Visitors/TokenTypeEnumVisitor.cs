@@ -65,6 +65,10 @@ namespace EbnfParserGenerator.Visitors
             sb.AppendLine();
 
             sb.AppendLine("public enum TokenType {");
+
+            sb.AppendLine("\tInvalid,");
+            sb.AppendLine("\tEOF,");
+
             foreach (var node in block.Body)
             {
                 var visited = node.Accept(this);
