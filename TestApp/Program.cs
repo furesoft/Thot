@@ -11,20 +11,17 @@ public class Program
             var lexer = new Lexer();
             var input = Console.ReadLine();
 
-            var tokens = lexer.Tokenize(input);
+            var result = Parser.Parse(input);
 
-            if (lexer.Messages.Any())
+            if (result.Messages.Any())
             {
-                foreach (var msg in lexer.Messages)
+                foreach (var msg in result.Messages)
                 {
                     Console.WriteLine(msg);
                 }
             }
 
-            var parser = new Parser(tokens);
-            var ast = parser.Program();
-
-            Console.WriteLine(ast);
+            Console.WriteLine(result.Tree);
         }
     }
 }

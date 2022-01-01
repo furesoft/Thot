@@ -6,7 +6,7 @@ namespace EbnfParserGenerator.Ebnf.AST
     public interface IVisitor<T>
     {
         T Visit(RuleNode rule);
-
+        T Visit(InvalidNode invalidNode);
         T Visit(LiteralNode literal);
         T Visit(GroupExpr groupExpr);
         T Visit(OptionalExpression optionalExpression);

@@ -1,16 +1,35 @@
-﻿namespace EbnfParserGenerator.Ebnf
+﻿using EbnfParserGenerator.Ebnf.AST;
+
+namespace EbnfParserGenerator.Ebnf
 {
     public class Parser
     {
+        public readonly List<Message> Messages;
         private int _position = 0;
         private List<Token> _tokens;
 
-        public Parser(List<Token> tokens)
+        public Parser(List<Token> tokens, List<Message> messages)
         {
             _tokens = tokens;
+            this.Messages = messages;
         }
 
-        public AST.ASTNode Program()
+        public static (ASTNode Tree, List<Message> Messages) Parse(string? src)
+        {
+            if (string.IsNullOrEmpty(src))
+            {
+                return (new InvalidNode(), new() { Message.Error("Empty File", 0, 0) });
+            }
+
+            var lexer = new Lexer();
+            var tokens = lexer.Tokenize(src);
+
+            var parser = new Parser(tokens, lexer.Messages);
+
+            return (parser.Program(), parser.Messages);
+        }
+
+        public ASTNode Program()
         {
             var node = Expression();
 
@@ -28,7 +47,7 @@
             return token;
         }
 
-        private AST.Expr Expression()
+        private Expr Expression()
         {
             var expr = Unary();
 
@@ -37,13 +56,13 @@
                 var op = Previous();
                 var right = Expression();
 
-                expr = new AST.AlternateNode(expr, right);
+                expr = new AlternateNode(expr, right);
             }
 
             return expr;
         }
 
-        private AST.Expr Group()
+        private Expr Group()
         {
             var expr = Expression();
 
@@ -53,7 +72,7 @@
             return new AST.Expressions.GroupExpr(expr);
         }
 
-        private AST.Expr Literal()
+        private Expr Literal()
         {
             var token = Previous();
 
@@ -70,7 +89,7 @@
             return Previous().Type == type;
         }
 
-        private AST.Expr NameExpr()
+        private Expr NameExpr()
         {
             if (Previous().Type != TokenType.Identifier) return null;
 
@@ -92,7 +111,7 @@
             return _tokens[_position - 1];
         }
 
-        private AST.Expr Primary()
+        private Expr Primary()
         {
             var token = Consume();
 
@@ -112,7 +131,7 @@
             return null;
         }
 
-        private AST.Expr Unary()
+        private Expr Unary()
         {
             var expr = Primary();
 
