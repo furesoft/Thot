@@ -73,7 +73,7 @@ namespace EbnfParserGenerator.Ebnf
 
         private bool Match(TokenType type)
         {
-            Token token = Previous();
+            Token token = Peek();
             var cond = token.Type == type;
 
             if (!cond)
@@ -103,7 +103,7 @@ namespace EbnfParserGenerator.Ebnf
         {
             if (_position >= _tokens.Count) return false;
 
-            return _tokens[_position].Type == type;
+            return _tokens[_position - 1].Type == type;
         }
 
         private Token Previous()
@@ -188,10 +188,6 @@ namespace EbnfParserGenerator.Ebnf
             else if (token.Type == TokenType.Exclamation)
             {
                 return new AST.Expressions.NotExpression(expr);
-            }
-            else
-            {
-                Messages.Add(Message.Error($"Unknown Unary Operator {token.Text}", token.Line, token.Column));
             }
 
             return expr;

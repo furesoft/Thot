@@ -28,7 +28,7 @@ namespace EbnfParserGenerator
                     }
                     else
                     {
-                        context.AddSource(Path.GetFileName(file.Path) + ".g", SourceText.From($"Console.WriteLine({result.Tree})"));
+                        context.AddSource(Path.GetFileName(file.Path) + ".g", SourceText.From($"Console.WriteLine(\"{result.Tree.ToString().Replace("\"", "\\" + "\"")}\");", System.Text.Encoding.ASCII));
                     }
                 }
             }
