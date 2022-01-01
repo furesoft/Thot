@@ -362,3 +362,4 @@ Dist/MacOS/
 Dist/
 
 Api/api/
+EbnfParserGenerator/obj/Debug/netstandard2.0/
