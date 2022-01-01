@@ -49,7 +49,7 @@ namespace EbnfParserGenerator.Ebnf
 
         private Token Expect(TokenType type)
         {
-            Match(type);
+            Match(type, 0);
 
             return Consume();
         }
@@ -66,9 +66,9 @@ namespace EbnfParserGenerator.Ebnf
             }
         }
 
-        private bool Match(TokenType type)
+        private bool Match(TokenType type, int offset = 1)
         {
-            Token token = Peek();
+            Token token = Peek(offset);
             var cond = token.Type == type;
 
             if (!cond)
@@ -221,8 +221,6 @@ namespace EbnfParserGenerator.Ebnf
 
         private ASTNode ParseTokenSpec()
         {
-            ExpectKeyword("token");
-
             var token = Consume();
 
             if (token.Type == TokenType.StringLiteral)
