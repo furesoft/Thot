@@ -14,11 +14,11 @@ namespace EbnfParserGenerator
                 if (file.Path.EndsWith(".grammar"))
                 {
                     var fileContent = File.ReadAllText(file.Path);
-                    var result = Parser.Parse(fileContent);
+                    var (Tree, Messages) = Parser.Parse(fileContent);
 
-                    if (result.Messages.Any())
+                    if (Messages.Any())
                     {
-                        foreach (var msg in result.Messages)
+                        foreach (var msg in Messages)
                         {
                             context.ReportDiagnostic(
                                 Diagnostic.Create(
@@ -28,7 +28,7 @@ namespace EbnfParserGenerator
                     }
                     else
                     {
-                        context.AddSource(Path.GetFileName(file.Path) + ".g", SourceText.From($"Console.WriteLine(\"{result.Tree.ToString().Replace("\"", "\\" + "\"")}\");", System.Text.Encoding.ASCII));
+                        context.AddSource(Path.GetFileName(file.Path) + ".g", SourceText.From($"Console.WriteLine(\"{Tree.ToString().Replace("\"", "\\" + "\"")}\");", System.Text.Encoding.ASCII));
                     }
                 }
             }

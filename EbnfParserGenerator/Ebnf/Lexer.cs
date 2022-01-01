@@ -56,7 +56,7 @@
         {
             if (_position >= _source.Length)
             {
-                return new Token(TokenType.EOF);
+                return new Token(TokenType.EOF, "\0", _position, _position, _line, 0);
             }
 
             SkipWhitespaces();
@@ -67,20 +67,21 @@
                 _column = 1;
             }
 
-            if (_symbolTokens.ContainsKey(this.Current()))
-            {
-                return new Token(_symbolTokens[this.Current()], this.Current().ToString(), _position++, _position, _line, ++_column);
-            }
-            else if (this.Current() == '-' && _source.Length >= 2)
+            if (this.Current() == '-' && _source.Length >= 2)
             {
                 if (Peek(1) == '>')
                 {
+                    _position++;
                     return new Token(TokenType.GoesTo, "->", _position, ++_position, _line, ++_column);
                 }
                 else
                 {
                     ReportError();
                 }
+            }
+            else if (_symbolTokens.ContainsKey(this.Current()))
+            {
+                return new Token(_symbolTokens[this.Current()], this.Current().ToString(), _position++, _position, _line, ++_column);
             }
             else if (this.Current() == '\'')
             {

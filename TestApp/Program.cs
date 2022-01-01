@@ -10,17 +10,17 @@ public class Program
         {
             var input = Console.ReadLine();
 
-            var result = Parser.Parse(input);
+            var (Tree, Messages) = Parser.Parse(input);
 
-            if (result.Messages.Any())
+            if (Messages.Any())
             {
-                foreach (var msg in result.Messages)
+                foreach (var msg in Messages)
                 {
                     Console.WriteLine(msg);
                 }
             }
 
-            Console.WriteLine(result.Tree);
+            Console.WriteLine(Tree);
         }
     }
 }

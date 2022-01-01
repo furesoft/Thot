@@ -31,7 +31,7 @@ namespace EbnfParserGenerator.Ebnf
 
         public ASTNode Program()
         {
-            var node = Expression();
+            var node = Rule();
 
             Match(TokenType.EOF);
 
@@ -74,6 +74,20 @@ namespace EbnfParserGenerator.Ebnf
         private bool Match(TokenType type)
         {
             Token token = Peek();
+            var cond = token.Type == type;
+
+            if (!cond)
+            {
+                Messages.Add(Message.Error($"Expected {type} but got {token.Type}", token.Line, token.Column));
+            }
+
+            return cond;
+        }
+
+        private bool Match(TokenType type, out Token token)
+        {
+            token = Peek();
+
             var cond = token.Type == type;
 
             if (!cond)
@@ -158,6 +172,22 @@ namespace EbnfParserGenerator.Ebnf
         private Expr RangeExpression()
         {
             throw new NotImplementedException();
+        }
+
+        private ASTNode Rule()
+        {
+            Match(TokenType.Identifier, out var nameToken);
+            Consume();
+
+            Match(TokenType.GoesTo);
+            Consume();
+
+            var expr = Expression();
+
+            PeekMatch(TokenType.Semicolon);
+            Consume();
+
+            return new RuleNode(nameToken.Text, new List<Expr> { expr });
         }
 
         private Expr StringLiteral()

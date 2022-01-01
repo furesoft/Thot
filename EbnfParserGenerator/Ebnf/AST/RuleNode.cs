@@ -2,6 +2,12 @@
 {
     public class RuleNode : ASTNode
     {
+        public RuleNode(string name, List<Expr> body)
+        {
+            Name = name;
+            Body = body;
+        }
+
         public List<Expr> Body { get; set; } = new List<Expr>();
         public string Name { get; set; }
 
