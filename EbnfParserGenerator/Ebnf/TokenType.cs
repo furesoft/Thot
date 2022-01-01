@@ -20,5 +20,6 @@ namespace EbnfParserGenerator.Ebnf
         OpenSquare,
         Minus,
         Number,
+        At,
     }
 }

@@ -31,7 +31,7 @@ namespace EbnfParserGenerator.Ebnf
 
         public ASTNode Program()
         {
-            var node = Rule();
+            var node = ProgramUnits();
 
             Match(TokenType.EOF);
 
@@ -45,6 +45,18 @@ namespace EbnfParserGenerator.Ebnf
             _position++;
 
             return token;
+        }
+
+        private void ExpectKeyword(string name)
+        {
+            Token token = Peek();
+
+            Consume();
+
+            if (!token.Text.Equals(name))
+            {
+                Messages.Add(Message.Error($"Expected {name} but got {token.Text}", token.Line, token.Column));
+            }
         }
 
         private Expr Expression()
@@ -103,6 +115,16 @@ namespace EbnfParserGenerator.Ebnf
             return new AST.Expressions.NameExpression(Previous().Text);
         }
 
+        private ASTNode ParseTokenSpecDefinition()
+        {
+            return null; //ToDo: implement token spec
+        }
+
+        private ASTNode ParseTokenSymbolSpec()
+        {
+            return new TokenSymbolNode(Previous().Text);
+        }
+
         private Token Peek(int offset = 1)
         {
             if (_position + offset >= _tokens.Count)
@@ -155,6 +177,30 @@ namespace EbnfParserGenerator.Ebnf
             return new InvalidExpr();
         }
 
+        private Block ProgramUnits()
+        {
+            var result = new List<ASTNode>();
+
+            while (Peek(0).Type != (TokenType.EOF))
+            {
+                var token = Consume();
+
+                if (token.Type == TokenType.At)
+                {
+                    result.Add(TokenSpec());
+                }
+                else
+                {
+                    result.Add(Rule());
+                }
+
+                Match(TokenType.Semicolon);
+                Consume();
+            }
+
+            return new Block(result);
+        }
+
         //[_"k]
         //[a-z]
         //[a-Z0-9]
@@ -184,9 +230,6 @@ namespace EbnfParserGenerator.Ebnf
 
             var expr = Expression();
 
-            PeekMatch(TokenType.Semicolon);
-            Consume();
-
             return new RuleNode(nameToken.Text, new List<Expr> { expr });
         }
 
@@ -195,6 +238,22 @@ namespace EbnfParserGenerator.Ebnf
             var token = Previous();
 
             return new AST.Expressions.LiteralNode(token.Text);
+        }
+
+        private ASTNode TokenSpec()
+        {
+            ExpectKeyword("token");
+
+            var token = Consume();
+
+            if (token.Type == TokenType.StringLiteral)
+            {
+                return ParseTokenSymbolSpec();
+            }
+            else
+            {
+                return ParseTokenSpecDefinition();
+            }
         }
 
         private Expr Unary()
