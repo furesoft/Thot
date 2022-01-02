@@ -1,4 +1,4 @@
-﻿using EbnfParserGenerator.Ebnf.AST;
+using EbnfParserGenerator.Ebnf.AST;
 
 namespace EbnfParserGenerator.Ebnf;
 
@@ -14,32 +14,23 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
 
         while (Peek(0).Type != (TokenType.EOF))
         {
-            var token = Consume();
+            var keyword = Consume();
 
-            if (token.Type == TokenType.At)
+            if (keyword.Type == TokenType.TokenKeyword)
             {
-                var keyword = Consume();
-
-                if (keyword.Type == TokenType.TokenKeyword)
-                {
-                    result.Add(ParseTokenSpec());
-                }
-                else if (keyword.Type == TokenType.TypeKeyword)
-                {
-                    result.Add(ParseTypeSpec());
-                }
-                else
-                {
-                    Messages.Add(Message.Error($"Unknown option '{keyword.Text}'. Did you mean 'token' or 'type'?", token.Line, token.Column));
-                }
+                result.Add(ParseTokenSpec());
             }
-            else if (token.Type == TokenType.GrammarKeyword)
+            else if (keyword.Type == TokenType.TypeKeyword)
+            {
+                result.Add(ParseTypeSpec());
+            }
+            else if (keyword.Type == TokenType.GrammarKeyword)
             {
                 result.Add(ParseGrammarBlock());
             }
             else
             {
-                Messages.Add(Message.Error($"Unknown Token '{token.Text}'. Did you mean @token, @type or grammar?", token.Line, token.Column));
+                Messages.Add(Message.Error($"Unknown keyword '{keyword.Text}'. Did you mean 'token', 'type' or 'grammar'?", keyword.Line, keyword.Column));
             }
 
             Expect(TokenType.Semicolon);
