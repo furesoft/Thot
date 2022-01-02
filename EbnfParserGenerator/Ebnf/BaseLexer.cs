@@ -26,6 +26,11 @@ public abstract class BaseLexer
         return tokens;
     }
 
+    protected int Advance()
+    {
+        return _position++;
+    }
+
     protected char Current()
     {
         if (_position >= _source.Length)
@@ -51,6 +56,6 @@ public abstract class BaseLexer
     protected void ReportError()
     {
         Messages.Add(Message.Error($"Unknown Charackter '{Current()}'", _line, _column++));
-        _position++;
+        Advance();
     }
 }

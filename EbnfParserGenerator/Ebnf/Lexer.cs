@@ -40,7 +40,7 @@ public class Lexer : BaseLexer
         {
             if (Peek(1) == '>')
             {
-                _position++;
+                Advance();
                 return new Token(TokenType.GoesTo, "->", _position, ++_position, _line, ++_column);
             }
             else
@@ -50,7 +50,7 @@ public class Lexer : BaseLexer
         }
         else if (_symbolTokens.ContainsKey(Current()))
         {
-            return new Token(_symbolTokens[Current()], Current().ToString(), _position++, _position, _line, ++_column);
+            return new Token(_symbolTokens[Current()], Current().ToString(), Advance(), _position, _line, ++_column);
         }
         else if (Current() == '\'')
         {
@@ -59,7 +59,7 @@ public class Lexer : BaseLexer
 
             while (Peek() != '\'') //ToDo: add end of file check
             {
-                _position++;
+                Advance();
                 _column++;
             }
 
@@ -73,7 +73,7 @@ public class Lexer : BaseLexer
             int oldColumn = _column;
             while (Peek() != '"') // ToDo: add end of file check
             {
-                _position++;
+                Advance();
                 _column++;
             }
 
@@ -87,7 +87,7 @@ public class Lexer : BaseLexer
 
             while (char.IsDigit(Peek(0)))
             {
-                _position++;
+                Advance();
             }
 
             return new Token(TokenType.Number, _source.Substring(oldpos, _position - oldpos), oldpos, _position, _line, _column);
@@ -100,7 +100,7 @@ public class Lexer : BaseLexer
             {
                 while (char.IsLetterOrDigit(Peek(0)))
                 {
-                    _position++;
+                    Advance();
                 }
 
                 return new Token(TokenType.Identifier, _source.Substring(oldpos, _position - oldpos), oldpos, _position, _line, _column);
@@ -121,7 +121,7 @@ public class Lexer : BaseLexer
     {
         while (char.IsWhiteSpace(Current()) && _position <= _source.Length)
         {
-            _position++;
+            Advance();
             _column++;
         }
     }
