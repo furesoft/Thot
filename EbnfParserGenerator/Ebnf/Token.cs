@@ -17,6 +17,7 @@ public class Token
     public Token(TokenType type)
     {
         Type = type;
+        Text = String.Empty;
     }
 
     public int Column { get; }

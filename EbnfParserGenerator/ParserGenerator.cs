@@ -35,12 +35,13 @@ public class ParserGenerator : ISourceGenerator
                     context.AddSource("TokenType.g.cs", new TokenTypeEnumVisitor().Text(Tree));
                     context.AddSource("Nodes.g.cs", new NodeGeneratorVisitor().Text(Tree));
                     context.AddSource("Lexer.g.cs", new LexerGeneratorVisitor().Text(Tree));
-                    context.AddSource("Message.g.cs", LoadFromResource<Message>("Parsing"));
-                    context.AddSource("Token.g.cs", LoadFromResource<Token>("Parsing"));
-                    context.AddSource("BaseLexer.g.cs", LoadFromResource<BaseLexer>("Parsing"));
                 }
             }
         }
+
+        context.AddSource("Message.g.cs", LoadFromResource<Message>("Parsing"));
+        context.AddSource("Token.g.cs", LoadFromResource<Token>("Parsing"));
+        context.AddSource("BaseLexer.g.cs", LoadFromResource<BaseLexer>("Parsing"));
     }
 
     public void Initialize(GeneratorInitializationContext context)
