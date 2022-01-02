@@ -3,125 +3,124 @@ using EbnfParserGenerator.Ebnf.AST.Expressions;
 using Microsoft.CodeAnalysis.Text;
 using System.Text;
 
-namespace EbnfParserGenerator.Visitors
+namespace EbnfParserGenerator.Visitors;
+
+public class TokenTypeEnumVisitor : IVisitor<string>
 {
-    public class TokenTypeEnumVisitor : IVisitor<string>
+    public SourceText Text(ASTNode node)
     {
-        public SourceText Text(ASTNode node)
+        return SourceText.From(node.Accept(this), Encoding.ASCII);
+    }
+
+    public string Visit(TypeDeclaration typeDeclaration)
+    {
+        return string.Empty;
+    }
+
+    public string Visit(SubTypeDeclaration subTypeDeclaration)
+    {
+        return string.Empty;
+    }
+
+    public string Visit(RuleNode rule)
+    {
+        return string.Empty;
+    }
+
+    public string Visit(InvalidNode invalidNode)
+    {
+        return string.Empty;
+    }
+
+    public string Visit(LiteralNode literal)
+    {
+        return string.Empty;
+    }
+
+    public string Visit(CharacterClassExpression charackterClassExpression)
+    {
+        return string.Empty;
+    }
+
+    public string Visit(InvalidExpr invalidExpr)
+    {
+        return string.Empty;
+    }
+
+    public string Visit(GroupExpr groupExpr)
+    {
+        return string.Empty;
+    }
+
+    public string Visit(TokenSymbolNode tokenSymbolNode)
+    {
+        return tokenSymbolNode.Name;
+    }
+
+    public string Visit(Block block)
+    {
+        var sb = new StringBuilder();
+
+        sb.AppendLine("namespace Parsing;");
+        sb.AppendLine();
+
+        sb.AppendLine("public enum TokenType {");
+
+        sb.AppendLine("\tInvalid,");
+        sb.AppendLine("\tEOF,");
+
+        foreach (var node in block.Body)
         {
-            return SourceText.From(node.Accept(this), Encoding.ASCII);
-        }
+            var visited = node.Accept(this);
 
-        public string Visit(TypeDeclaration typeDeclaration)
-        {
-            return null;
-        }
-
-        public string Visit(SubTypeDeclaration subTypeDeclaration)
-        {
-            return null;
-        }
-
-        public string Visit(RuleNode rule)
-        {
-            return null;
-        }
-
-        public string Visit(InvalidNode invalidNode)
-        {
-            return null;
-        }
-
-        public string Visit(LiteralNode literal)
-        {
-            return null;
-        }
-
-        public string Visit(CharacterClassExpression charackterClassExpression)
-        {
-            return null;
-        }
-
-        public string Visit(InvalidExpr invalidExpr)
-        {
-            return null;
-        }
-
-        public string Visit(GroupExpr groupExpr)
-        {
-            return null;
-        }
-
-        public string Visit(TokenSymbolNode tokenSymbolNode)
-        {
-            return tokenSymbolNode.Name;
-        }
-
-        public string Visit(Block block)
-        {
-            var sb = new StringBuilder();
-
-            sb.AppendLine("namespace Parsing;");
-            sb.AppendLine();
-
-            sb.AppendLine("public enum TokenType {");
-
-            sb.AppendLine("\tInvalid,");
-            sb.AppendLine("\tEOF,");
-
-            foreach (var node in block.Body)
+            if (visited != string.Empty)
             {
-                var visited = node.Accept(this);
-
-                if (visited != null)
-                {
-                    sb.AppendLine("\t" + visited + ",");
-                }
+                sb.AppendLine("\t" + visited + ",");
             }
-
-            sb.AppendLine("}");
-
-            return sb.ToString();
         }
 
-        public string Visit(OptionalExpression optionalExpression)
-        {
-            return null;
-        }
+        sb.AppendLine("}");
 
-        public string Visit(NameExpression nameExpression)
-        {
-            return null;
-        }
+        return sb.ToString();
+    }
 
-        public string Visit(ZeroOrMoreExpression zeroOrMoreExpression)
-        {
-            return null;
-        }
+    public string Visit(OptionalExpression optionalExpression)
+    {
+        return string.Empty;
+    }
 
-        public string Visit(CharackterClassRange charackterClassRange)
-        {
-            return null;
-        }
+    public string Visit(NameExpression nameExpression)
+    {
+        return string.Empty;
+    }
 
-        public string Visit(OneOrMoreExpression oneOrMoreExpression)
-        {
-            return null;
-        }
+    public string Visit(ZeroOrMoreExpression zeroOrMoreExpression)
+    {
+        return string.Empty;
+    }
 
-        public string Visit(AlternateNode alternateNode)
-        {
-            return null;
-        }
+    public string Visit(CharackterClassRange charackterClassRange)
+    {
+        return string.Empty;
+    }
 
-        public string Visit(NotExpression notExpression)
-        {
-            return null;
-        }
+    public string Visit(OneOrMoreExpression oneOrMoreExpression)
+    {
+        return string.Empty;
+    }
 
-        public string Visit(TokenSpecNode tokenSpecNode)
-        {
-            return tokenSpecNode.Rule.Name.FirstCharToUpper();
-        }
+    public string Visit(AlternateNode alternateNode)
+    {
+        return string.Empty;
+    }
+
+    public string Visit(NotExpression notExpression)
+    {
+        return string.Empty;
+    }
+
+    public string Visit(TokenSpecNode tokenSpecNode)
+    {
+        return tokenSpecNode.Rule.Name.FirstCharToUpper();
     }
 }

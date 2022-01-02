@@ -1,7 +1,5 @@
-﻿namespace EbnfParserGenerator.Ebnf.AST
-{
-    public abstract class Expr : ASTNode
-    {
+﻿namespace EbnfParserGenerator.Ebnf.AST;
 
-    }
+public abstract class Expr : ASTNode
+{
 }

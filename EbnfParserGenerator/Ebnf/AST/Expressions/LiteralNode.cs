@@ -1,22 +1,21 @@
-﻿namespace EbnfParserGenerator.Ebnf.AST.Expressions
+﻿namespace EbnfParserGenerator.Ebnf.AST.Expressions;
+
+public class LiteralNode : Expr
 {
-    public class LiteralNode : Expr
+    public LiteralNode(object value)
     {
-        public LiteralNode(object value)
-        {
-            Value = value;
-        }
+        Value = value;
+    }
 
-        public object Value { get; set; }
+    public object Value { get; set; }
 
-        public override T Accept<T>(IVisitor<T> visitor)
-        {
-            return visitor.Visit(this);
-        }
+    public override T Accept<T>(IVisitor<T> visitor)
+    {
+        return visitor.Visit(this);
+    }
 
-        public override string ToString()
-        {
-            return $"\"{Value}\"";
-        }
+    public override string ToString()
+    {
+        return $"\"{Value}\"";
     }
 }

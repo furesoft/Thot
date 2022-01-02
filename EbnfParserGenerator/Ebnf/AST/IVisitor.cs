@@ -1,41 +1,42 @@
 ﻿using EbnfParserGenerator.Ebnf.AST.Expressions;
 
-namespace EbnfParserGenerator.Ebnf.AST
+namespace EbnfParserGenerator.Ebnf.AST;
+
+public interface IVisitor<T>
 {
-    public interface IVisitor<T>
-    {
-        T Visit(RuleNode rule);
+    T Visit(RuleNode rule);
 
-        T Visit(InvalidNode invalidNode);
+    T Visit(InvalidNode invalidNode);
 
-        T Visit(LiteralNode literal);
-        T Visit(TypeDeclaration typeDeclaration);
-        T Visit(SubTypeDeclaration subTypeDeclaration);
+    T Visit(LiteralNode literal);
 
-        T Visit(CharacterClassExpression charackterClassExpression);
+    T Visit(TypeDeclaration typeDeclaration);
 
-        T Visit(InvalidExpr invalidExpr);
+    T Visit(SubTypeDeclaration subTypeDeclaration);
 
-        T Visit(GroupExpr groupExpr);
+    T Visit(CharacterClassExpression charackterClassExpression);
 
-        T Visit(TokenSymbolNode tokenSymbolNode);
+    T Visit(InvalidExpr invalidExpr);
 
-        T Visit(Block block);
+    T Visit(GroupExpr groupExpr);
 
-        T Visit(OptionalExpression optionalExpression);
+    T Visit(TokenSymbolNode tokenSymbolNode);
 
-        T Visit(NameExpression nameExpression);
+    T Visit(Block block);
 
-        T Visit(ZeroOrMoreExpression zeroOrMoreExpression);
+    T Visit(OptionalExpression optionalExpression);
 
-        T Visit(CharackterClassRange charackterClassRange);
+    T Visit(NameExpression nameExpression);
 
-        T Visit(OneOrMoreExpression oneOrMoreExpression);
+    T Visit(ZeroOrMoreExpression zeroOrMoreExpression);
 
-        T Visit(AlternateNode alternateNode);
+    T Visit(CharackterClassRange charackterClassRange);
 
-        T Visit(NotExpression notExpression);
+    T Visit(OneOrMoreExpression oneOrMoreExpression);
 
-        T Visit(TokenSpecNode tokenSpecNode);
-    }
+    T Visit(AlternateNode alternateNode);
+
+    T Visit(NotExpression notExpression);
+
+    T Visit(TokenSpecNode tokenSpecNode);
 }

@@ -1,7 +1,6 @@
-﻿namespace EbnfParserGenerator.Ebnf.AST
+﻿namespace EbnfParserGenerator.Ebnf.AST;
+
+public abstract class ASTNode
 {
-    public abstract class ASTNode
-    {
-        public abstract T Accept<T>(IVisitor<T> visitor);
-    }
+    public abstract T Accept<T>(IVisitor<T> visitor);
 }

@@ -1,10 +1,9 @@
-﻿namespace EbnfParserGenerator.Ebnf.AST
+﻿namespace EbnfParserGenerator.Ebnf.AST;
+
+public class InvalidNode : ASTNode
 {
-    public class InvalidNode : ASTNode
+    public override T Accept<T>(IVisitor<T> visitor)
     {
-        public override T Accept<T>(IVisitor<T> visitor)
-        {
-            return visitor.Visit(this);
-        }
+        return visitor.Visit(this);
     }
 }

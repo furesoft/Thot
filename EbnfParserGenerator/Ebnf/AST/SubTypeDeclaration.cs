@@ -1,32 +1,31 @@
-﻿namespace EbnfParserGenerator.Ebnf.AST
+﻿namespace EbnfParserGenerator.Ebnf.AST;
+
+public class SubTypeDeclaration : ASTNode
 {
-    public class SubTypeDeclaration : ASTNode
+    public SubTypeDeclaration(string name, List<(string name, string type)> properties)
     {
-        public SubTypeDeclaration(string name, List<(string name, string type)> properties)
-        {
-            Name = name;
-            Properties = properties;
-        }
+        Name = name;
+        Properties = properties;
+    }
 
-        public string Name { get; }
-        public List<(string name, string type)> Properties { get; }
+    public string Name { get; }
+    public List<(string name, string type)> Properties { get; }
 
-        public override T Accept<T>(IVisitor<T> visitor)
-        {
-            return visitor.Visit(this);
-        }
+    public override T Accept<T>(IVisitor<T> visitor)
+    {
+        return visitor.Visit(this);
+    }
 
-        public override string ToString()
-        {
-            return $"| {Name}({string.Join(",", ToString(Properties))})";
-        }
+    public override string ToString()
+    {
+        return $"| {Name}({string.Join(",", ToString(Properties))})";
+    }
 
-        private IEnumerable<string> ToString(List<(string name, string type)> properties)
+    private IEnumerable<string> ToString(List<(string name, string type)> properties)
+    {
+        foreach (var prop in properties)
         {
-            foreach (var prop in properties)
-            {
-                yield return $"{prop.name} : {prop.type}";
-            }
+            yield return $"{prop.name} : {prop.type}";
         }
     }
 }
