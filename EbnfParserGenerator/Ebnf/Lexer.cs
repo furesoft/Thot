@@ -26,7 +26,7 @@
         private int _column = 1;
         private int _line = 1;
         private int _position = 0;
-        private string _source;
+        private string _source = string.Empty;
 
         public List<Token> Tokenize(string source)
         {

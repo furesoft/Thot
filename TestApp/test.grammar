@@ -3,7 +3,8 @@
 
 @token identifier -> "a";
 
-@type Expr ->
+@type Expr -> 
     | Literal(Value : object)
     | Binary(Left : Expr, Operator : string, Right : Expr)
+    | Unary(Inner : Expr, Operator : string)
     | Group(Inner : Expr);

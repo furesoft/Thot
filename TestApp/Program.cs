@@ -20,8 +20,6 @@ public class Program
                 }
             }
 
-            var l = new Lexer().Tokenize("@token 'f'; ");
-
             Console.WriteLine(Tree.Accept(new EbnfParserGenerator.Visitors.IVisitorGeneratorVisitor()));
             Console.WriteLine(Tree.Accept(new EbnfParserGenerator.Visitors.TokenTypeEnumVisitor()));
             Console.WriteLine(Tree.Accept(new EbnfParserGenerator.Visitors.NodeGeneratorVisitor()));

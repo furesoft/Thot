@@ -124,19 +124,12 @@ namespace EbnfParserGenerator.Visitors
 
             sb.AppendLine("public class Lexer {");
 
-            sb.AppendLine(GenerateMethods());
-
             sb.AppendLine("\t private Token? NextToken() {");
 
             sb.AppendLine(node.Accept(this));
 
             sb.AppendLine("}");
             return sb;
-        }
-
-        private string GenerateMethods()
-        {
-            throw new NotImplementedException();
         }
     }
 }

@@ -34,8 +34,9 @@ namespace EbnfParserGenerator
                         context.AddSource("IVisitor.g.cs", new IVisitorGeneratorVisitor().Text(Tree));
                         context.AddSource("TokenType.g.cs", new TokenTypeEnumVisitor().Text(Tree));
                         context.AddSource("Nodes.g.cs", new NodeGeneratorVisitor().Text(Tree));
-                        context.AddSource("Nodes.g.cs", new LexerGeneratorVisitor().Text(Tree));
+                        //context.AddSource("Lexer.g.cs", new LexerGeneratorVisitor().Text(Tree));
                         context.AddSource("Message.g.cs", LoadFromResource<Message>("Parsing"));
+                        context.AddSource("Token.g.cs", LoadFromResource<Token>("Parsing"));
                     }
                 }
             }

@@ -28,6 +28,7 @@
 	  <None Remove="bin\Debug\netstandard2.0\\EbnfParserGenerator.dll" />
 
 		<EmbeddedResource Include="Ebnf\Message.cs" />
+		<EmbeddedResource Include="Ebnf\Token.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
