@@ -40,7 +40,7 @@ public abstract class BaseLexer
 
     protected char Peek(int offset = 0)
     {
-        if (_position >= _source.Length)
+        if (_position + offset >= _source.Length)
         {
             return '\0';
         }

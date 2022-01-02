@@ -48,15 +48,6 @@ public class Lexer : BaseLexer
                 ReportError();
             }
         }
-        else if (Current() == '/' && Peek(1) == '/')
-        {
-            while (Peek(1) != '\n' && Peek(1) != '\r')
-            {
-                _position++;
-            }
-
-            _column = 1;
-        }
         else if (_symbolTokens.ContainsKey(Current()))
         {
             return new Token(_symbolTokens[Current()], Current().ToString(), _position++, _position, _line, ++_column);
@@ -119,6 +110,11 @@ public class Lexer : BaseLexer
         }
 
         return Token.Invalid;
+    }
+
+    private bool isAtEnd()
+    {
+        return _position >= _source.Length;
     }
 
     private void SkipWhitespaces()
