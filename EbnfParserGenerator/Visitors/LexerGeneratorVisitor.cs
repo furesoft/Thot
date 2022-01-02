@@ -120,14 +120,15 @@ public class LexerGeneratorVisitor : IVisitor<string>
     {
         var sb = new StringBuilder();
 
-        sb.AppendLine($"namespace Parsing.AST;");
+        sb.AppendLine($"namespace Parsing;");
 
-        sb.AppendLine("public class Lexer {");
+        sb.AppendLine("public class Lexer : BaseLexer {");
 
-        sb.AppendLine("\t private Token? NextToken() {");
+        sb.AppendLine("\t protected override Token NextToken() {");
 
         sb.AppendLine(node.Accept(this));
 
+        sb.AppendLine("return Token.Invalid; \n}");
         sb.AppendLine("}");
         return sb;
     }

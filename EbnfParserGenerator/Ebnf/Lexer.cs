@@ -1,9 +1,7 @@
 ﻿namespace EbnfParserGenerator.Ebnf;
 
-public class Lexer
+public class Lexer : BaseLexer
 {
-    public List<Message> Messages = new();
-
     private readonly Dictionary<char, TokenType> _symbolTokens = new()
     {
         [';'] = TokenType.Semicolon,
@@ -23,39 +21,7 @@ public class Lexer
         [','] = TokenType.Comma,
     };
 
-    private int _column = 1;
-    private int _line = 1;
-    private int _position = 0;
-    private string _source = string.Empty;
-
-    public List<Token> Tokenize(string source)
-    {
-        _source = source;
-
-        var tokens = new List<Token>();
-
-        Token newToken;
-        do
-        {
-            newToken = NextToken();
-
-            tokens.Add(newToken);
-        } while (newToken.Type != TokenType.EOF);
-
-        return tokens;
-    }
-
-    private char Current()
-    {
-        if (_position >= _source.Length)
-        {
-            return '\0';
-        }
-
-        return _source[_position];
-    }
-
-    private Token? NextToken()
+    protected override Token NextToken()
     {
         SkipWhitespaces();
 
@@ -105,7 +71,7 @@ public class Lexer
         {
             int oldpos = ++_position;
             int oldColumn = _column;
-            while (Peek() != '"')
+            while (Peek() != '"') // ToDo: add end of file check
             {
                 _position++;
                 _column++;
@@ -144,22 +110,6 @@ public class Lexer
         }
 
         return Token.Invalid;
-    }
-
-    private char Peek(int offset = 0)
-    {
-        if (_position >= _source.Length)
-        {
-            return '\0';
-        }
-
-        return _source[_position + offset];
-    }
-
-    private void ReportError()
-    {
-        Messages.Add(Message.Error($"Unknown Charackter '{Current()}'", _line, _column++));
-        _position++;
     }
 
     private void SkipWhitespaces()

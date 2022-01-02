@@ -16,7 +16,7 @@ public class Parser
 
     public static (ASTNode Tree, List<Message> Messages) Parse(string? src)
     {
-        if (string.IsNullOrEmpty(src))
+        if (string.IsNullOrEmpty(src) || src == null)
         {
             return (new InvalidNode(), new() { Message.Error("Empty File", 0, 0) });
         }
