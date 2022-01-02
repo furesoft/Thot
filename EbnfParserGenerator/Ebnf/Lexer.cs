@@ -30,13 +30,13 @@ public class Lexer : BaseLexer
             return new Token(TokenType.EOF, "\0", _position, _position, _line, 0);
         }
 
-        if (this.Current() == '\n' || this.Current() == '\r')
+        if (Current() == '\n' || Current() == '\r')
         {
             _line++;
             _column = 1;
         }
 
-        if (this.Current() == '-' && _source.Length >= 2)
+        if (Current() == '-' && _source.Length >= 2)
         {
             if (Peek(1) == '>')
             {
@@ -48,18 +48,20 @@ public class Lexer : BaseLexer
                 ReportError();
             }
         }
-        else if (this.Current() == '/' && Peek(1) == '/')
+        else if (Current() == '/' && Peek(1) == '/')
         {
             while (Peek(1) != '\n' && Peek(1) != '\r')
             {
                 _position++;
             }
+
+            _column = 1;
         }
-        else if (_symbolTokens.ContainsKey(this.Current()))
+        else if (_symbolTokens.ContainsKey(Current()))
         {
-            return new Token(_symbolTokens[this.Current()], this.Current().ToString(), _position++, _position, _line, ++_column);
+            return new Token(_symbolTokens[Current()], Current().ToString(), _position++, _position, _line, ++_column);
         }
-        else if (this.Current() == '\'')
+        else if (Current() == '\'')
         {
             int oldpos = ++_position;
             int oldColumn = _column;
@@ -74,7 +76,7 @@ public class Lexer : BaseLexer
 
             return new Token(TokenType.StringLiteral, _source.Substring(oldpos, _position - oldpos), oldpos - 1, ++_position, _line, oldColumn);
         }
-        else if (this.Current() == '"')
+        else if (Current() == '"')
         {
             int oldpos = ++_position;
             int oldColumn = _column;
@@ -88,7 +90,7 @@ public class Lexer : BaseLexer
 
             return new Token(TokenType.StringLiteral, _source.Substring(oldpos, _position - oldpos), oldpos - 1, ++_position, _line, oldColumn);
         }
-        else if (char.IsDigit(this.Current()))
+        else if (char.IsDigit(Current()))
         {
             int oldpos = _position;
 
@@ -103,7 +105,7 @@ public class Lexer : BaseLexer
         {
             int oldpos = _position;
 
-            if (char.IsLetter(this.Current()))
+            if (char.IsLetter(Current()))
             {
                 while (char.IsLetterOrDigit(Peek(0)))
                 {
