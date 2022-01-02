@@ -48,6 +48,13 @@ public class Lexer : BaseLexer
                 ReportError();
             }
         }
+        else if (this.Current() == '/' && Peek(1) == '/')
+        {
+            while (Peek(1) != '\n' && Peek(1) != '\r')
+            {
+                _position++;
+            }
+        }
         else if (_symbolTokens.ContainsKey(this.Current()))
         {
             return new Token(_symbolTokens[this.Current()], this.Current().ToString(), _position++, _position, _line, ++_column);
