@@ -143,7 +143,7 @@ public class Parser
         }
         else
         {
-            Messages.Add(Message.Error($"Unknown Expression {token.Text}", token.Line, token.Column));
+            Messages.Add(Message.Error($"Unknown Expression. Did you mean one of [] '' \"\" () or identifier?", token.Line, token.Column));
         }
 
         return new InvalidExpr();
@@ -259,7 +259,6 @@ public class Parser
 
         var subtypes = new List<ASTNode>();
 
-        //ParseSubTypes until peek ;
         while (Peek(0).Type != TokenType.Semicolon)
         {
             subtypes.Add(ParseSubTypeSpec());
@@ -337,6 +336,10 @@ public class Parser
                 else if (keyword.Type == TokenType.Identifier && keyword.Text == "type")
                 {
                     result.Add(ParseTypeSpec());
+                }
+                else
+                {
+                    Messages.Add(Message.Error($"Unknown option '{keyword.Text}'. Did you mean 'token' or 'type'?", token.Line, token.Column));
                 }
             }
             else

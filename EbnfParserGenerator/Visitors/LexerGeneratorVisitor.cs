@@ -49,23 +49,6 @@ public class LexerGeneratorVisitor : IVisitor<string>
         return string.Empty;
     }
 
-    public string Visit(Block block)
-    {
-        var sb = new StringBuilder();
-
-        foreach (var node in block.Body)
-        {
-            var visited = node.Accept(this);
-
-            if (visited != string.Empty)
-            {
-                sb.AppendLine(visited);
-            }
-        }
-
-        return sb.ToString();
-    }
-
     public string Visit(OptionalExpression optionalExpression)
     {
         return string.Empty;
@@ -114,6 +97,23 @@ public class LexerGeneratorVisitor : IVisitor<string>
     public string Visit(SubTypeDeclaration subTypeDeclaration)
     {
         return string.Empty;
+    }
+
+    public string Visit(Block block)
+    {
+        var sb = new StringBuilder();
+
+        foreach (var node in block.Body)
+        {
+            var visited = node.Accept(this);
+
+            if (visited != string.Empty)
+            {
+                sb.AppendLine(visited);
+            }
+        }
+
+        return sb.ToString();
     }
 
     private StringBuilder GenerateClass(ASTNode node)
