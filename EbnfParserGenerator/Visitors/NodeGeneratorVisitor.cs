@@ -116,6 +116,7 @@ public class NodeGeneratorVisitor : IVisitor<string>
         sb.AppendLine($"namespace Parsing.AST;");
 
         sb.AppendLine($"public abstract class {typeDeclaration.Name} {{");
+
         sb.AppendLine("\tpublic abstract T Accept<T>(IVisitor<T> visitor);");
         sb.AppendLine("}");
 
@@ -132,6 +133,24 @@ public class NodeGeneratorVisitor : IVisitor<string>
         return string.Empty;
     }
 
+    private string GenerateCtors(SubTypeDeclaration typeDeclaration)
+    {
+        var sb = new StringBuilder();
+
+        sb.AppendLine($"\tpublic {typeDeclaration.Name}() {{}}");
+        sb.AppendLine();
+        sb.AppendLine($"\tpublic {typeDeclaration.Name}({string.Join(",", typeDeclaration.Properties.Select(_ => $"{_.type} _{_.name.ToLower()}"))}) {{");
+
+        foreach (var prop in typeDeclaration.Properties)
+        {
+            sb.AppendLine($"\t\tthis.{prop.name} = _{prop.name.ToLower()};");
+        }
+
+        sb.AppendLine("}");
+
+        return sb.ToString();
+    }
+
     private string GenerateSubType(SubTypeDeclaration subType, string name)
     {
         var sb = new StringBuilder();
@@ -142,6 +161,12 @@ public class NodeGeneratorVisitor : IVisitor<string>
         {
             sb.AppendLine($"\tpublic {prop.type} {prop.name} {{ get; set; }}");
         }
+
+        sb.AppendLine();
+
+        sb.AppendLine(GenerateCtors(subType));
+
+        sb.AppendLine();
 
         sb.AppendLine("\tpublic override T Accept<T>(IVisitor<T> visitor) {");
         sb.AppendLine($"\t\treturn visitor.Visit(this);");
