@@ -12,6 +12,11 @@ public class NodeGeneratorVisitor : IVisitor<string>
         return SourceText.From(node.Accept(this), Encoding.ASCII);
     }
 
+    public string Visit(GrammarNode grammarNode)
+    {
+        return string.Empty;
+    }
+
     public string Visit(RuleNode rule)
     {
         return string.Empty;

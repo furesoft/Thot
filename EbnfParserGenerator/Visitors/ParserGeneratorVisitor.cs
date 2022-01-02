@@ -134,6 +134,11 @@ public class ParserGeneratorVisitor : IVisitor<string>
         return sb.ToString();
     }
 
+    public string Visit(GrammarNode grammarNode)
+    {
+        return string.Empty;
+    }
+
     private string GenerateCtor()
     {
         var sb = new StringBuilder();

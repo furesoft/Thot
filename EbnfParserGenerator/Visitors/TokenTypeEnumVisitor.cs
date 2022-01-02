@@ -12,6 +12,11 @@ public class TokenTypeEnumVisitor : IVisitor<string>
         return SourceText.From(node.Accept(this), Encoding.ASCII);
     }
 
+    public string Visit(GrammarNode grammarNode)
+    {
+        return string.Empty;
+    }
+
     public string Visit(TypeDeclaration typeDeclaration)
     {
         return string.Empty;

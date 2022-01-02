@@ -14,6 +14,11 @@ public class LexerGeneratorVisitor : IVisitor<string>
         return SourceText.From(sb.ToString(), Encoding.ASCII);
     }
 
+    public string Visit(GrammarNode grammarNode)
+    {
+        return string.Empty;
+    }
+
     public string Visit(RuleNode rule)
     {
         return string.Empty;

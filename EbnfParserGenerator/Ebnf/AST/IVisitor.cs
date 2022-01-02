@@ -25,7 +25,7 @@ public interface IVisitor<T>
     T Visit(Block block);
 
     T Visit(OptionalExpression optionalExpression);
-
+    T Visit(GrammarNode grammarNode);
     T Visit(NameExpression nameExpression);
 
     T Visit(ZeroOrMoreExpression zeroOrMoreExpression);
