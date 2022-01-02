@@ -363,3 +363,7 @@ Dist/
 
 Api/api/
 EbnfParserGenerator/obj/Debug/netstandard2.0/
+
+EbnfParserGenerator/obj/
+
+TestApp/obj/

@@ -190,6 +190,8 @@ namespace EbnfParserGenerator.Ebnf
             // | typename(arg : type,...)
             Expect(TokenType.Pipe);
 
+            if (Previous().Type != TokenType.Pipe) return new InvalidNode();
+
             var typename = Expect(TokenType.Identifier);
 
             var properties = new List<(string name, string type)>();

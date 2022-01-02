@@ -63,7 +63,7 @@ namespace EbnfParserGenerator.Visitors
 
                 if (visited != null)
                 {
-                    sb.AppendLine(visited);
+                    sb.Append(visited);
                 }
             }
 
@@ -122,7 +122,7 @@ namespace EbnfParserGenerator.Visitors
 
                 if (visited != null)
                 {
-                    sb.AppendLine(visited);
+                    sb.Append(visited);
                 }
             }
 

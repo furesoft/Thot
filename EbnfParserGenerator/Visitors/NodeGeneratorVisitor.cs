@@ -114,7 +114,7 @@ namespace EbnfParserGenerator.Visitors
             sb.AppendLine("\tpublic abstract T Accept<T>(IVisitor<T> visitor);");
             sb.AppendLine("}");
 
-            foreach (SubTypeDeclaration subType in typeDeclaration.Block.Body)
+            foreach (SubTypeDeclaration subType in typeDeclaration.Block.Body.OfType<SubTypeDeclaration>())
             {
                 sb.AppendLine(GenerateSubType(subType, typeDeclaration.Name));
             }
