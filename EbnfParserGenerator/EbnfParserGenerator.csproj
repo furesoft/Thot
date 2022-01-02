@@ -28,6 +28,7 @@
 		<EmbeddedResource Include="Ebnf\Message.cs" />
 		<EmbeddedResource Include="Ebnf\Token.cs" />
 		<EmbeddedResource Include="Ebnf\BaseLexer.cs" />
+		<EmbeddedResource Include="Ebnf\BaseParser.cs" />
 	</ItemGroup>
 
 	<ItemGroup>

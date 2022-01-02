@@ -2,95 +2,46 @@
 
 namespace EbnfParserGenerator.Ebnf;
 
-public class Parser
+public class Parser : BaseParser<ASTNode, Lexer, Parser>
 {
-    public readonly List<Message> Messages;
-    private readonly List<Token> _tokens;
-    private int _position = 0;
-
-    public Parser(List<Token> tokens, List<Message> messages)
+    public Parser(List<Token> tokens, List<Message> messages) : base(tokens, messages)
     {
-        _tokens = tokens;
-        this.Messages = messages;
     }
 
-    public static (ASTNode Tree, List<Message> Messages) Parse(string? src)
+    protected override ASTNode Start()
     {
-        if (string.IsNullOrEmpty(src) || src == null)
+        var result = new List<ASTNode>();
+
+        while (Peek(0).Type != (TokenType.EOF))
         {
-            return (new InvalidNode(), new() { Message.Error("Empty File", 0, 0) });
+            var token = Consume();
+
+            if (token.Type == TokenType.At)
+            {
+                var keyword = Consume();
+
+                if (keyword.Type == TokenType.Identifier && keyword.Text == "token")
+                {
+                    result.Add(ParseTokenSpec());
+                }
+                else if (keyword.Type == TokenType.Identifier && keyword.Text == "type")
+                {
+                    result.Add(ParseTypeSpec());
+                }
+                else
+                {
+                    Messages.Add(Message.Error($"Unknown option '{keyword.Text}'. Did you mean 'token' or 'type'?", token.Line, token.Column));
+                }
+            }
+            else
+            {
+                result.Add(ParseRule());
+            }
+
+            Expect(TokenType.Semicolon);
         }
 
-        var lexer = new Lexer();
-        var tokens = lexer.Tokenize(src);
-
-        var parser = new Parser(tokens, lexer.Messages);
-
-        return (parser.Program(), parser.Messages);
-    }
-
-    public ASTNode Program()
-    {
-        var node = ProgramUnits();
-
-        Match(TokenType.EOF);
-
-        return node;
-    }
-
-    private Token Consume()
-    {
-        var token = Peek(0);
-
-        _position++;
-
-        return token;
-    }
-
-    private Token Expect(TokenType type)
-    {
-        Match(type, 0);
-
-        return Consume();
-    }
-
-    private void ExpectKeyword(string name)
-    {
-        Token token = Peek();
-
-        Consume();
-
-        if (!token.Text.Equals(name))
-        {
-            Messages.Add(Message.Error($"Expected {name} but got {token.Text}", token.Line, token.Column));
-        }
-    }
-
-    private bool Match(TokenType type, int offset = 1)
-    {
-        Token token = Peek(offset);
-        var cond = token.Type == type;
-
-        if (!cond)
-        {
-            Messages.Add(Message.Error($"Expected {type} but got {token.Type}", token.Line, token.Column));
-        }
-
-        return cond;
-    }
-
-    private bool Match(TokenType type, out Token token)
-    {
-        token = Peek();
-
-        var cond = token.Type == type;
-
-        if (!cond)
-        {
-            Messages.Add(Message.Error($"Expected {type} but got {token.Type}", token.Line, token.Column));
-        }
-
-        return cond;
+        return new Block(result);
     }
 
     private Expr ParseExpression()
@@ -291,65 +242,5 @@ public class Parser
         }
 
         return expr;
-    }
-
-    private Token Peek(int offset = 1)
-    {
-        if (_position + offset >= _tokens.Count)
-        {
-            return new Token(TokenType.EOF);
-        }
-
-        return _tokens[_position + offset];
-    }
-
-    private bool PeekMatch(TokenType type)
-    {
-        if (_position >= _tokens.Count) return false;
-
-        return _tokens[_position - 1].Type == type;
-    }
-
-    private Token Previous()
-    {
-        if (_position >= _tokens.Count) return _tokens[_tokens.Count - 1];
-
-        return _tokens[_position - 1];
-    }
-
-    private Block ProgramUnits()
-    {
-        var result = new List<ASTNode>();
-
-        while (Peek(0).Type != (TokenType.EOF))
-        {
-            var token = Consume();
-
-            if (token.Type == TokenType.At)
-            {
-                var keyword = Consume();
-
-                if (keyword.Type == TokenType.Identifier && keyword.Text == "token")
-                {
-                    result.Add(ParseTokenSpec());
-                }
-                else if (keyword.Type == TokenType.Identifier && keyword.Text == "type")
-                {
-                    result.Add(ParseTypeSpec());
-                }
-                else
-                {
-                    Messages.Add(Message.Error($"Unknown option '{keyword.Text}'. Did you mean 'token' or 'type'?", token.Line, token.Column));
-                }
-            }
-            else
-            {
-                result.Add(ParseRule());
-            }
-
-            Expect(TokenType.Semicolon);
-        }
-
-        return new Block(result);
     }
 }
