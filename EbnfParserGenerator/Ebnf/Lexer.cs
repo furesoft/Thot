@@ -103,7 +103,9 @@ public class Lexer : BaseLexer
                     Advance();
                 }
 
-                return new Token(TokenType.Identifier, _source.Substring(oldpos, _position - oldpos), oldpos, _position, _line, _column);
+                var tokenText = _source.Substring(oldpos, _position - oldpos);
+
+                return new Token(TokenUtils.GetTokenType(tokenText), tokenText, oldpos, _position, _line, _column);
             }
 
             ReportError();

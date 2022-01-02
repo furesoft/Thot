@@ -144,7 +144,7 @@ public class NodeGeneratorVisitor : IVisitor<string>
         }
 
         sb.AppendLine("\tpublic override T Accept<T>(IVisitor<T> visitor) {");
-        sb.AppendLine($"\t\treturn visitor.Visit<T>(this);");
+        sb.AppendLine($"\t\treturn visitor.Visit(this);");
         sb.AppendLine("\t}");
         sb.AppendLine("}");
 

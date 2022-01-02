@@ -20,11 +20,11 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
             {
                 var keyword = Consume();
 
-                if (keyword.Type == TokenType.Identifier && keyword.Text == "token")
+                if (keyword.Type == TokenType.TokenKeyword)
                 {
                     result.Add(ParseTokenSpec());
                 }
-                else if (keyword.Type == TokenType.Identifier && keyword.Text == "type")
+                else if (keyword.Type == TokenType.TypeKeyword)
                 {
                     result.Add(ParseTypeSpec());
                 }
@@ -33,9 +33,13 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
                     Messages.Add(Message.Error($"Unknown option '{keyword.Text}'. Did you mean 'token' or 'type'?", token.Line, token.Column));
                 }
             }
+            else if (token.Type == TokenType.GrammarKeyword)
+            {
+                result.Add(ParseGrammarBlock());
+            }
             else
             {
-                result.Add(ParseRule());
+                Messages.Add(Message.Error($"Unknown Token '{token.Text}'. Did you mean @token, @type or grammar?", token.Line, token.Column));
             }
 
             Expect(TokenType.Semicolon);
@@ -56,6 +60,11 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
         }
 
         return expr;
+    }
+
+    private ASTNode ParseGrammarBlock()
+    {
+        throw new NotImplementedException();
     }
 
     private Expr ParseGroup()

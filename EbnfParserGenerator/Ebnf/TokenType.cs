@@ -22,4 +22,7 @@ public enum TokenType
     At,
     Colon,
     Comma,
+    GrammarKeyword,
+    TokenKeyword,
+    TypeKeyword,
 }

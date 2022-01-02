@@ -138,7 +138,7 @@ public class IVisitorGeneratorVisitor : IVisitor<string>
     {
         var sb = new StringBuilder();
 
-        sb.AppendLine($"\tT Visit<T>({subTypeDeclaration.Name} {subTypeDeclaration.Name.FirstCharToLower()});");
+        sb.AppendLine($"\tT Visit({subTypeDeclaration.Name} {subTypeDeclaration.Name.FirstCharToLower()});");
 
         return sb.ToString();
     }
