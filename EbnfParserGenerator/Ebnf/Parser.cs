@@ -55,7 +55,19 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
 
     private ASTNode ParseGrammarBlock()
     {
-        throw new NotImplementedException();
+        var nameToken = Expect(TokenType.Identifier);
+
+        Expect(TokenType.OpenCurly);
+
+        var body = new Block();
+        while (!PeekMatch(TokenType.CloseCurly, 0))
+        {
+            body.Body.Add(ParseRule());
+        }
+
+        Expect(TokenType.CloseCurly);
+
+        return new GrammarNode(nameToken.Text, body);
     }
 
     private Expr ParseGroup()
@@ -125,6 +137,8 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
         Expect(TokenType.GoesTo);
 
         var expr = ParseExpression();
+
+        Expect(TokenType.Semicolon);
 
         return new RuleNode(nameToken.Text, new List<Expr> { expr });
     }
@@ -222,22 +236,30 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
     {
         var expr = ParsePrimary();
 
-        var token = Consume();
+        var token = Peek();
 
         if (token.Type == TokenType.Plus)
         {
+            Consume();
+
             return new AST.Expressions.OneOrMoreExpression(expr);
         }
         else if (token.Type == TokenType.Star)
         {
+            Consume();
+
             return new AST.Expressions.ZeroOrMoreExpression(expr);
         }
         else if (token.Type == TokenType.Question)
         {
+            Consume();
+
             return new AST.Expressions.OptionalExpression(expr);
         }
         else if (token.Type == TokenType.Exclamation)
         {
+            Consume();
+
             return new AST.Expressions.NotExpression(expr);
         }
 

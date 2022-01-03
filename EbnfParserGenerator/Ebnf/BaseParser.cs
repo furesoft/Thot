@@ -103,11 +103,11 @@ public abstract class BaseParser<TNode, TLexer, TParser>
         return _tokens[_position + offset];
     }
 
-    protected bool PeekMatch(TokenType type)
+    protected bool PeekMatch(TokenType type, int offset = 1)
     {
         if (_position >= _tokens.Count) return false;
 
-        return _tokens[_position - 1].Type == type;
+        return _tokens[_position - offset].Type == type;
     }
 
     protected Token Previous()

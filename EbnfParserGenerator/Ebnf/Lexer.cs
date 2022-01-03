@@ -19,6 +19,8 @@ public class Lexer : BaseLexer
         ['@'] = TokenType.At,
         [':'] = TokenType.Colon,
         [','] = TokenType.Comma,
+        ['{'] = TokenType.OpenCurly,
+        ['}'] = TokenType.CloseCurly,
     };
 
     protected override Token NextToken()

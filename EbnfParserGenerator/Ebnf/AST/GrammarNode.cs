@@ -1,4 +1,6 @@
-﻿namespace EbnfParserGenerator.Ebnf.AST;
+﻿using System.Text;
+
+namespace EbnfParserGenerator.Ebnf.AST;
 
 public class GrammarNode : ASTNode
 {
@@ -14,5 +16,17 @@ public class GrammarNode : ASTNode
     public override T Accept<T>(IVisitor<T> visitor)
     {
         return visitor.Visit(this);
+    }
+
+    public override string ToString()
+    {
+        var sb = new StringBuilder();
+
+        sb.AppendLine($"grammar {Name} {{");
+
+        sb.AppendLine($"\t{Body}");
+
+        sb.AppendLine("}");
+        return sb.ToString();
     }
 }

@@ -44,10 +44,13 @@ public class ParserGenerator : ISourceGenerator
             }
         }
 
-        context.AddSource("Message.g.cs", LoadFromResource<Message>("Parsing"));
-        context.AddSource("Token.g.cs", LoadFromResource<Token>("Parsing"));
-        context.AddSource("BaseLexer.g.cs", LoadFromResource<BaseLexer>("Parsing"));
-        context.AddSource("BaseParser.g.cs", LoadFromResource<BaseParser<ASTNode, Lexer, Parser>>("Parsing"));
+        if (context.AdditionalFiles.Any())
+        {
+            context.AddSource("Message.g.cs", LoadFromResource<Message>("Parsing"));
+            context.AddSource("Token.g.cs", LoadFromResource<Token>("Parsing"));
+            context.AddSource("BaseLexer.g.cs", LoadFromResource<BaseLexer>("Parsing"));
+            context.AddSource("BaseParser.g.cs", LoadFromResource<BaseParser<ASTNode, Lexer, Parser>>("Parsing"));
+        }
     }
 
     public void Initialize(GeneratorInitializationContext context)

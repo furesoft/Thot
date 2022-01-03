@@ -25,4 +25,6 @@ public enum TokenType
     GrammarKeyword,
     TokenKeyword,
     TypeKeyword,
+    CloseCurly,
+    OpenCurly,
 }

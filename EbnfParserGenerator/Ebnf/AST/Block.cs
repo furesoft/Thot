@@ -7,6 +7,11 @@ public class Block : ASTNode
         Body = body;
     }
 
+    public Block()
+    {
+        Body = new List<ASTNode>();
+    }
+
     public List<ASTNode> Body { get; set; }
 
     public override T Accept<T>(IVisitor<T> visitor)
