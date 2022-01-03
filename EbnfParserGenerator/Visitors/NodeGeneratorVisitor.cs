@@ -146,7 +146,7 @@ public class NodeGeneratorVisitor : IVisitor<string>
             sb.AppendLine($"\t\tthis.{prop.name} = _{prop.name.ToLower()};");
         }
 
-        sb.AppendLine("}");
+        sb.AppendLine("\t}");
 
         return sb.ToString();
     }

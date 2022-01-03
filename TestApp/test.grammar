@@ -8,3 +8,4 @@ type Expr ->
     | Binary(Left : Expr, Operator : string, Right : Expr)
     | Unary(Inner : Expr, Operator : string)
     | Group(Inner : Expr);
+   

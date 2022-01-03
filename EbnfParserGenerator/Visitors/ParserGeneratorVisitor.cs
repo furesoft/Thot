@@ -90,26 +90,7 @@ public class ParserGeneratorVisitor : IVisitor<string>
 
     public string Visit(TypeDeclaration typeDeclaration)
     {
-        var sb = new StringBuilder();
-
-        sb.AppendLine($"using Parsing.AST;");
-
-        sb.AppendLine();
-        sb.AppendLine($"namespace Parsing;");
-
-        sb.AppendLine($"public class Parser : BaseParser<{typeDeclaration.Name}, Lexer, Parser> {{");
-
-        sb.AppendLine(GenerateCtor());
-
-        sb.AppendLine($"\t protected override {typeDeclaration.Name} Start() {{");
-
-        //sb.AppendLine(node.Accept(this));
-
-        sb.AppendLine("\t\treturn default; \n");
-        sb.AppendLine("\t}");
-        sb.AppendLine("}");
-
-        return sb.ToString();
+        return string.Empty;
     }
 
     public string Visit(SubTypeDeclaration subTypeDeclaration)
@@ -136,7 +117,26 @@ public class ParserGeneratorVisitor : IVisitor<string>
 
     public string Visit(GrammarNode grammarNode)
     {
-        return string.Empty;
+        var sb = new StringBuilder();
+
+        sb.AppendLine($"using Parsing.AST;");
+
+        sb.AppendLine();
+        sb.AppendLine($"namespace Parsing;");
+
+        sb.AppendLine($"public class {grammarNode.Name.FirstCharToUpper()}Parser : BaseParser<{grammarNode.Type.FirstCharToUpper()}, Lexer, {grammarNode.Name}Parser> {{");
+
+        sb.AppendLine(GenerateCtor());
+
+        sb.AppendLine($"\tprotected override {grammarNode.Type} Start() {{");
+
+        //sb.AppendLine(node.Accept(this));
+
+        sb.AppendLine("\t\treturn default;");
+        sb.AppendLine("\t}");
+        sb.AppendLine("}");
+
+        return sb.ToString();
     }
 
     private string GenerateCtor()

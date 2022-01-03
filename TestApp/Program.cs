@@ -23,6 +23,8 @@ public class Program
             Console.WriteLine(Tree?.Accept(new EbnfParserGenerator.Visitors.IVisitorGeneratorVisitor()));
             Console.WriteLine(Tree?.Accept(new EbnfParserGenerator.Visitors.TokenTypeEnumVisitor()));
             Console.WriteLine(Tree?.Accept(new EbnfParserGenerator.Visitors.NodeGeneratorVisitor()));
+            Console.WriteLine(Tree?.Accept(new EbnfParserGenerator.Visitors.LexerGeneratorVisitor()));
+            Console.WriteLine(Tree?.Accept(new EbnfParserGenerator.Visitors.ParserGeneratorVisitor()));
         }
     }
 }

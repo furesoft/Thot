@@ -27,4 +27,5 @@ public enum TokenType
     TypeKeyword,
     CloseCurly,
     OpenCurly,
+    For,
 }

@@ -57,6 +57,10 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
     {
         var nameToken = Expect(TokenType.Identifier);
 
+        Expect(TokenType.For);
+
+        var typeToken = Expect(TokenType.Identifier);
+
         Expect(TokenType.OpenCurly);
 
         var body = new Block();
@@ -67,7 +71,7 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
 
         Expect(TokenType.CloseCurly);
 
-        return new GrammarNode(nameToken.Text, body);
+        return new GrammarNode(nameToken.Text, typeToken.Text, body);
     }
 
     private Expr ParseGroup()

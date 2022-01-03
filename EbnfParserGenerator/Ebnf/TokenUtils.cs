@@ -9,6 +9,7 @@ public static class TokenUtils
             "token" => TokenType.TokenKeyword,
             "type" => TokenType.TypeKeyword,
             "grammar" => TokenType.GrammarKeyword,
+            "for" => TokenType.For,
             _ => TokenType.Identifier,
         };
     }
