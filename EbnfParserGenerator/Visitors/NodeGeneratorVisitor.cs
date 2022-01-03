@@ -117,6 +117,8 @@ public class NodeGeneratorVisitor : IVisitor<string>
 
         sb.AppendLine($"public abstract class {typeDeclaration.Name} {{");
 
+        sb.AppendLine($"\tpublic {typeDeclaration.Name}? Parent {{ get; set; }}");
+
         sb.AppendLine("\tpublic abstract T Accept<T>(IVisitor<T> visitor);");
         sb.AppendLine("}");
 
@@ -133,18 +135,23 @@ public class NodeGeneratorVisitor : IVisitor<string>
         return string.Empty;
     }
 
-    private string GenerateCtors(SubTypeDeclaration typeDeclaration)
+    private string GenerateCtors(SubTypeDeclaration typeDeclaration, string name)
     {
         var sb = new StringBuilder();
 
         sb.AppendLine($"\tpublic {typeDeclaration.Name}() {{}}");
         sb.AppendLine();
-        sb.AppendLine($"\tpublic {typeDeclaration.Name}({string.Join(",", typeDeclaration.Properties.Select(_ => $"{_.type} _{_.name.ToLower()}"))}) {{");
+
+        sb.AppendLine($"\tpublic {typeDeclaration.Name}({name} parent) {{ this.Parent = parent; }}");
+        sb.AppendLine();
+
+        sb.AppendLine($"\tpublic {typeDeclaration.Name}({string.Join(",", typeDeclaration.Properties.Select(_ => $"{_.type} _{_.name.ToLower()}"))}, {name}? parent = null) {{");
 
         foreach (var prop in typeDeclaration.Properties)
         {
             sb.AppendLine($"\t\tthis.{prop.name} = _{prop.name.ToLower()};");
         }
+        sb.AppendLine("\t\tthis.Parent = parent;");
 
         sb.AppendLine("\t}");
 
@@ -157,6 +164,8 @@ public class NodeGeneratorVisitor : IVisitor<string>
 
         sb.AppendLine($"public class {subType.Name} : {name} {{");
 
+        sb.AppendLine();
+
         foreach (var prop in subType.Properties)
         {
             sb.AppendLine($"\tpublic {prop.type} {prop.name} {{ get; set; }}");
@@ -164,9 +173,7 @@ public class NodeGeneratorVisitor : IVisitor<string>
 
         sb.AppendLine();
 
-        sb.AppendLine(GenerateCtors(subType));
-
-        sb.AppendLine();
+        sb.AppendLine(GenerateCtors(subType, name));
 
         sb.AppendLine("\tpublic override T Accept<T>(IVisitor<T> visitor) {");
         sb.AppendLine($"\t\treturn visitor.Visit(this);");
