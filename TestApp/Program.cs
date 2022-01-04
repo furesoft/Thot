@@ -1,4 +1,5 @@
 ﻿using EbnfParserGenerator.Ebnf;
+using EbnfParserGenerator.Visitors;
 
 namespace TestApp;
 
@@ -20,11 +21,23 @@ public class Program
                 }
             }
 
-            Console.WriteLine(Tree?.Accept(new EbnfParserGenerator.Visitors.IVisitorGeneratorVisitor()));
-            Console.WriteLine(Tree?.Accept(new EbnfParserGenerator.Visitors.TokenTypeEnumVisitor()));
-            Console.WriteLine(Tree?.Accept(new EbnfParserGenerator.Visitors.NodeGeneratorVisitor()));
-            Console.WriteLine(Tree?.Accept(new EbnfParserGenerator.Visitors.LexerGeneratorVisitor()));
-            Console.WriteLine(Tree?.Accept(new EbnfParserGenerator.Visitors.ParserGeneratorVisitor()));
+            Console.WriteLine(Tree?.Accept(new IVisitorGeneratorVisitor()));
+            Console.WriteLine(Tree?.Accept(new TokenTypeEnumVisitor()));
+            Console.WriteLine(Tree?.Accept(new NodeGeneratorVisitor()));
+            Console.WriteLine(Tree?.Accept(new LexerGeneratorVisitor()));
+
+            var ruleAnalysisVisitor = new RuleAnalysisVisitor();
+            if (Tree.Accept(ruleAnalysisVisitor))
+            {
+                foreach (var msg in ruleAnalysisVisitor.Messages)
+                {
+                    Console.WriteLine(msg);
+                }
+            }
+            else
+            {
+                Console.WriteLine(Tree?.Accept(new ParserGeneratorVisitor()));
+            }
         }
     }
 }

@@ -2,15 +2,17 @@
 
 public class RuleNode : ASTNode
 {
-    public RuleNode(string name, Block body, ASTNode parent)
+    public RuleNode(Token nameToken, Block body, ASTNode parent)
     {
-        Name = name;
+        Name = nameToken.Text;
         Body = body;
         Parent = parent;
+        NameToken = nameToken;
     }
 
     public Block Body { get; set; } = new();
     public string Name { get; set; }
+    public Token NameToken { get; set; }
 
     public override T Accept<T>(IVisitor<T> visitor)
     {

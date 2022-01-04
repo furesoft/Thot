@@ -94,7 +94,7 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
 
     private Expr ParseNameExpr()
     {
-        return new AST.Expressions.NameExpression(Previous().Text);
+        return new AST.Expressions.NameExpression(Previous());
     }
 
     private Expr ParsePrimary()
@@ -153,7 +153,7 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
 
         Expect(TokenType.Semicolon);
 
-        return new RuleNode(nameToken.Text, new Block(new List<ASTNode> { expr }), parent);
+        return new RuleNode(nameToken, new Block(new List<ASTNode> { expr }), parent);
     }
 
     private Expr ParseStringLiteral()

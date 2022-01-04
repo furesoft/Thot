@@ -24,13 +24,7 @@ public class ParserGenerator : ISourceGenerator
                 {
                     if (Messages.Any())
                     {
-                        foreach (var msg in Messages)
-                        {
-                            context.ReportDiagnostic(
-                                Diagnostic.Create(
-                                    new DiagnosticDescriptor("EBNF1", "Parse Error", msg.Text, "Parsing", DiagnosticSeverity.Error, true),
-                                    Location.Create(file.Path, new TextSpan(msg.Line, 1), new LinePositionSpan(new LinePosition(msg.Line - 1, msg.Column), new LinePosition(msg.Line, msg.Column)))));
-                        }
+                        ReportMessages(context, file, Messages);
                     }
                     else
                     {
@@ -38,20 +32,15 @@ public class ParserGenerator : ISourceGenerator
                         context.AddSource("TokenType.g.cs", new TokenTypeEnumVisitor().Text(Tree));
                         context.AddSource("Nodes.g.cs", new NodeGeneratorVisitor().Text(Tree));
                         context.AddSource("Lexer.g.cs", new LexerGeneratorVisitor().Text(Tree));
-                        var parserGeneratorVisitor = new ParserGeneratorVisitor();
 
-                        Tree.Accept(parserGeneratorVisitor);
-
-                        if (parserGeneratorVisitor.HasStartRule)
+                        var ruleAnalysisVisitor = new RuleAnalysisVisitor();
+                        if (Tree.Accept(ruleAnalysisVisitor))
                         {
-                            context.AddSource("Parser.g.cs", parserGeneratorVisitor.Text(Tree));
+                            ReportMessages(context, file, ruleAnalysisVisitor.Messages);
                         }
                         else
                         {
-                            context.ReportDiagnostic(
-                                Diagnostic.Create(
-                                    new DiagnosticDescriptor("EBNF2", "Semantic Error",
-                                    "A grammar has to define a 'start' rule", "Semantic", DiagnosticSeverity.Error, true), null));
+                            GenerateParser(context, Tree);
                         }
                     }
                 }
@@ -71,6 +60,25 @@ public class ParserGenerator : ISourceGenerator
     {
     }
 
+    private static void GenerateParser(GeneratorExecutionContext context, ASTNode? Tree)
+    {
+        var parserGeneratorVisitor = new ParserGeneratorVisitor();
+
+        Tree.Accept(parserGeneratorVisitor);
+
+        if (parserGeneratorVisitor.HasStartRule)
+        {
+            context.AddSource("Parser.g.cs", parserGeneratorVisitor.Text(Tree));
+        }
+        else
+        {
+            context.ReportDiagnostic(
+                Diagnostic.Create(
+                    new DiagnosticDescriptor("EBNF2", "Semantic Error",
+                    "A grammar has to define a 'start' rule", "Semantic", DiagnosticSeverity.Error, true), null));
+        }
+    }
+
     private static SourceText LoadFromResource<T>(string newNamespace)
     {
         Type type = typeof(T);
@@ -80,5 +88,21 @@ public class ParserGenerator : ISourceGenerator
         text = text.Replace($"namespace {type.Namespace};", $"namespace {newNamespace};");
 
         return SourceText.From(text, Encoding.ASCII);
+    }
+
+    private static void ReportError(GeneratorExecutionContext context, AdditionalText file, Message msg)
+    {
+        context.ReportDiagnostic(
+            Diagnostic.Create(
+                new DiagnosticDescriptor("EBNF1", "Parse Error", msg.Text, "Parsing", DiagnosticSeverity.Error, true),
+                Location.Create(file.Path, new TextSpan(msg.Line, 1), new LinePositionSpan(new LinePosition(msg.Line - 1, msg.Column), new LinePosition(msg.Line, msg.Column)))));
+    }
+
+    private static void ReportMessages(GeneratorExecutionContext context, AdditionalText file, List<Message>? Messages)
+    {
+        foreach (var msg in Messages)
+        {
+            ReportError(context, file, msg);
+        }
     }
 }

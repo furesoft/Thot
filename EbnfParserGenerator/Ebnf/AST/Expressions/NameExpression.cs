@@ -2,12 +2,14 @@
 
 public class NameExpression : Expr
 {
-    public NameExpression(string name)
+    public NameExpression(Token nameToken)
     {
-        Name = name;
+        Name = nameToken.Text;
+        NameToken = nameToken;
     }
 
     public string Name { get; set; }
+    public Token NameToken { get; set; }
 
     public override T Accept<T>(IVisitor<T> visitor)
     {
