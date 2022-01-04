@@ -217,8 +217,7 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
     {
         _position--;
 
-        var node = new TokenSpecNode((RuleNode)ParseRule(new GrammarNode(null, null, new()))); //ToDo: replace with specialized method
-
+        var node = new TokenSpecNode((RuleNode)ParseRule(new GrammarNode(null, null, new())));
         _position--;
 
         return node;
