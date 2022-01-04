@@ -71,14 +71,16 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
         }
 
         var body = new Block();
+        var result = new GrammarNode(nameToken.Text, typeToken.Text, body);
+
         while (!PeekMatch(TokenType.CloseCurly, 0))
         {
-            body.Body.Add(ParseRule());
+            body.Body.Add(ParseRule(result));
         }
 
         Expect(TokenType.CloseCurly);
 
-        return new GrammarNode(nameToken.Text, typeToken.Text, body);
+        return result;
     }
 
     private Expr ParseGroup()
@@ -141,7 +143,7 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
         throw new NotImplementedException();
     }
 
-    private ASTNode ParseRule()
+    private ASTNode ParseRule(GrammarNode parent)
     {
         var nameToken = Expect(TokenType.Identifier);
 
@@ -151,7 +153,7 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
 
         Expect(TokenType.Semicolon);
 
-        return new RuleNode(nameToken.Text, new List<Expr> { expr });
+        return new RuleNode(nameToken.Text, new Block(new List<ASTNode> { expr }), parent);
     }
 
     private Expr ParseStringLiteral()
@@ -215,7 +217,7 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
     {
         _position--;
 
-        var node = new TokenSpecNode((RuleNode)ParseRule());
+        var node = new TokenSpecNode((RuleNode)ParseRule(new GrammarNode(null, null, new()))); //ToDo: replace with specialized method
 
         _position--;
 

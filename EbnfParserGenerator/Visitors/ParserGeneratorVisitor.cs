@@ -17,7 +17,16 @@ public class ParserGeneratorVisitor : IVisitor<string>
 
     public string Visit(RuleNode rule)
     {
-        return string.Empty;
+        var sb = new StringBuilder();
+
+        sb.AppendLine($"\tprotected {((GrammarNode)rule.Parent).Type} {rule.Name.FirstCharToUpper()}() {{");
+
+        sb.AppendLine(rule.Body.Accept(this));
+
+        sb.AppendLine("\t\treturn default;");
+        sb.AppendLine("\t}");
+
+        return sb.ToString();
     }
 
     public string Visit(InvalidNode invalidNode)
@@ -123,6 +132,8 @@ public class ParserGeneratorVisitor : IVisitor<string>
 
         if (HasStartRule)
         {
+            var rules = grammarNode.Body.Body.OfType<RuleNode>();
+
             var sb = new StringBuilder();
 
             sb.AppendLine($"using System.Collections.Generic;");
@@ -137,10 +148,23 @@ public class ParserGeneratorVisitor : IVisitor<string>
 
             sb.AppendLine($"\tprotected override {grammarNode.Type} Start() {{");
 
-            //sb.AppendLine(node.Accept(this));
+            sb.Append(rules.First(_ => _.Name.Equals("start")).Body.Accept(this));
 
             sb.AppendLine("\t\treturn default;");
             sb.AppendLine("\t}");
+
+            foreach (var rule in rules.Where(_ => _.Name != "start"))
+            {
+                sb.AppendLine();
+
+                sb.AppendLine($"\tprotected {grammarNode.Type} {rule.Name.FirstCharToUpper()}() {{");
+
+                sb.Append(rules.First(_ => _.Name.Equals("start")).Body.Accept(this));
+
+                sb.AppendLine("\t\treturn default;");
+                sb.AppendLine("\t}");
+            }
+
             sb.AppendLine("}");
 
             return sb.ToString();
@@ -153,7 +177,7 @@ public class ParserGeneratorVisitor : IVisitor<string>
     {
         var sb = new StringBuilder();
 
-        sb.AppendLine($"\t{name}Parser(List<Token> tokens, List<Message> messages) : base(tokens, messages) {{}}");
+        sb.AppendLine($"\tpublic {name}Parser(List<Token> tokens, List<Message> messages) : base(tokens, messages) {{}}");
 
         return sb.ToString();
     }

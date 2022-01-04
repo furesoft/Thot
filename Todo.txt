@@ -1,2 +1,2 @@
-[ ] grammar-block implementieren
-[?] @keyword option implementieren mit TokenUtils.GetTokenType()
+[ ] Expr sequence implementieren:
+	main -> "if" "(" condition ")";

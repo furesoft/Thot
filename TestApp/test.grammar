@@ -1,5 +1,6 @@
 ﻿token "fun";
 token "def";
+token "world";
 
 token identifier -> "a";
 
@@ -11,5 +12,6 @@ type Expr ->
 
 
 grammar Main for Expr {
-    start -> "fun";
+    start -> hello;
+    hello -> "world";
 };
