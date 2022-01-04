@@ -119,6 +119,7 @@ public class ParserGeneratorVisitor : IVisitor<string>
     {
         var sb = new StringBuilder();
 
+        sb.AppendLine($"using System.Collections.Generic;");
         sb.AppendLine($"using Parsing.AST;");
 
         sb.AppendLine();
@@ -126,7 +127,7 @@ public class ParserGeneratorVisitor : IVisitor<string>
 
         sb.AppendLine($"public class {grammarNode.Name.FirstCharToUpper()}Parser : BaseParser<{grammarNode.Type.FirstCharToUpper()}, Lexer, {grammarNode.Name}Parser> {{");
 
-        sb.AppendLine(GenerateCtor());
+        sb.AppendLine(GenerateCtor(grammarNode.Name.FirstCharToUpper()));
 
         sb.AppendLine($"\tprotected override {grammarNode.Type} Start() {{");
 
@@ -139,11 +140,11 @@ public class ParserGeneratorVisitor : IVisitor<string>
         return sb.ToString();
     }
 
-    private string GenerateCtor()
+    private string GenerateCtor(string name)
     {
         var sb = new StringBuilder();
 
-        sb.AppendLine("\tParser(List<Token> tokens, List<Message> messages) : base(tokens, messages) {}");
+        sb.AppendLine($"\t{name}Parser(List<Token> tokens, List<Message> messages) : base(tokens, messages) {{}}");
 
         return sb.ToString();
     }
