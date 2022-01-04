@@ -38,7 +38,19 @@ public class ParserGenerator : ISourceGenerator
                         context.AddSource("TokenType.g.cs", new TokenTypeEnumVisitor().Text(Tree));
                         context.AddSource("Nodes.g.cs", new NodeGeneratorVisitor().Text(Tree));
                         context.AddSource("Lexer.g.cs", new LexerGeneratorVisitor().Text(Tree));
-                        context.AddSource("Parser.g.cs", new ParserGeneratorVisitor().Text(Tree));
+                        var parserGeneratorVisitor = new ParserGeneratorVisitor();
+
+                        if (parserGeneratorVisitor.HasStartRule)
+                        {
+                            context.AddSource("Parser.g.cs", parserGeneratorVisitor.Text(Tree));
+                        }
+                        else
+                        {
+                            context.ReportDiagnostic(
+                                Diagnostic.Create(
+                                    new DiagnosticDescriptor("EBNF2", "Semantic Error",
+                                    "A grammar has to define a 'start' rule", "Semantic", DiagnosticSeverity.Error, true), null));
+                        }
                     }
                 }
             }

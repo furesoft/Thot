@@ -57,11 +57,18 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
     {
         var nameToken = Expect(TokenType.Identifier);
 
-        Expect(TokenType.For);
+        var forToken = Expect(TokenType.For);
 
         var typeToken = Expect(TokenType.Identifier);
 
         Expect(TokenType.OpenCurly);
+
+        if (typeToken.Type != TokenType.Identifier && forToken.Type != TokenType.For)
+        {
+            Messages.Add(Message.Error("Parser can only be generated if NodeType is specified", forToken.Line, forToken.Column));
+
+            return new InvalidNode();
+        }
 
         var body = new Block();
         while (!PeekMatch(TokenType.CloseCurly, 0))

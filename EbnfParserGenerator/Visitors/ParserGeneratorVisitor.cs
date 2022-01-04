@@ -7,6 +7,8 @@ namespace EbnfParserGenerator.Visitors;
 
 public class ParserGeneratorVisitor : IVisitor<string>
 {
+    public bool HasStartRule { get; set; }
+
     public SourceText Text(ASTNode node)
     {
         var source = node.Accept(this);
@@ -117,27 +119,34 @@ public class ParserGeneratorVisitor : IVisitor<string>
 
     public string Visit(GrammarNode grammarNode)
     {
-        var sb = new StringBuilder();
+        HasStartRule = grammarNode.Body.Body.OfType<RuleNode>().FirstOrDefault(_ => _.Name.Equals("start")) != null;
 
-        sb.AppendLine($"using System.Collections.Generic;");
-        sb.AppendLine($"using Parsing.AST;");
+        if (HasStartRule)
+        {
+            var sb = new StringBuilder();
 
-        sb.AppendLine();
-        sb.AppendLine($"namespace Parsing;");
+            sb.AppendLine($"using System.Collections.Generic;");
+            sb.AppendLine($"using Parsing.AST;");
 
-        sb.AppendLine($"public class {grammarNode.Name.FirstCharToUpper()}Parser : BaseParser<{grammarNode.Type.FirstCharToUpper()}, Lexer, {grammarNode.Name}Parser> {{");
+            sb.AppendLine();
+            sb.AppendLine($"namespace Parsing;");
 
-        sb.AppendLine(GenerateCtor(grammarNode.Name.FirstCharToUpper()));
+            sb.AppendLine($"public class {grammarNode.Name.FirstCharToUpper()}Parser : BaseParser<{grammarNode.Type.FirstCharToUpper()}, Lexer, {grammarNode.Name}Parser> {{");
 
-        sb.AppendLine($"\tprotected override {grammarNode.Type} Start() {{");
+            sb.AppendLine(GenerateCtor(grammarNode.Name.FirstCharToUpper()));
 
-        //sb.AppendLine(node.Accept(this));
+            sb.AppendLine($"\tprotected override {grammarNode.Type} Start() {{");
 
-        sb.AppendLine("\t\treturn default;");
-        sb.AppendLine("\t}");
-        sb.AppendLine("}");
+            //sb.AppendLine(node.Accept(this));
 
-        return sb.ToString();
+            sb.AppendLine("\t\treturn default;");
+            sb.AppendLine("\t}");
+            sb.AppendLine("}");
+
+            return sb.ToString();
+        }
+
+        return string.Empty;
     }
 
     private string GenerateCtor(string name)
