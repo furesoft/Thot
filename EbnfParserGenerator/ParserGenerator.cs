@@ -40,6 +40,8 @@ public class ParserGenerator : ISourceGenerator
                         context.AddSource("Lexer.g.cs", new LexerGeneratorVisitor().Text(Tree));
                         var parserGeneratorVisitor = new ParserGeneratorVisitor();
 
+                        Tree.Accept(parserGeneratorVisitor);
+
                         if (parserGeneratorVisitor.HasStartRule)
                         {
                             context.AddSource("Parser.g.cs", parserGeneratorVisitor.Text(Tree));
