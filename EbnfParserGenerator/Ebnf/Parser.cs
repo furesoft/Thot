@@ -53,6 +53,18 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
         return expr;
     }
 
+    private Block ParseExpressionList()
+    {
+        var result = new Block();
+
+        while (Peek(0).Type != TokenType.Semicolon)
+        {
+            result.Body.Add(ParseExpression());
+        }
+
+        return result;
+    }
+
     private ASTNode ParseGrammarBlock()
     {
         var nameToken = Expect(TokenType.Identifier);
@@ -149,11 +161,11 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
 
         Expect(TokenType.GoesTo);
 
-        var expr = ParseExpression();
+        var exprs = ParseExpressionList();
 
         Expect(TokenType.Semicolon);
 
-        return new RuleNode(nameToken, new Block(new List<ASTNode> { expr }), parent);
+        return new RuleNode(nameToken, exprs, parent);
     }
 
     private Expr ParseStringLiteral()
