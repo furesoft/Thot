@@ -76,9 +76,11 @@ public class PrintVisitorGeneratorVisitor : IVisitor<string>
         sb.AppendLine("\tpublic string Visit(Block block) {");
         sb.AppendLine("\t\tvar sb = new StringBuilder();");
 
+        sb.AppendLine("\t\tsb.AppendLine(\"(Block \");");
         sb.AppendLine("\t\tforeach(var node in block.Body) {");
-        sb.AppendLine("\t\t\tsb.AppendLine(node.Accept(this));");
+        sb.AppendLine("\t\t\tsb.AppendLine(\"\t\" + node.Accept(this));");
         sb.AppendLine("\t\t}");
+        sb.AppendLine("\t\tsb.AppendLine(\")\");");
 
         sb.AppendLine("\t\treturn sb.ToString();");
         sb.AppendLine("\t}");

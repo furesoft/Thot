@@ -150,15 +150,18 @@ public class NodeGeneratorVisitor : IVisitor<string>
         sb.AppendLine($"\tpublic {typeDeclaration.Name}({name} parent) {{ this.Parent = parent; }}");
         sb.AppendLine();
 
-        sb.AppendLine($"\tpublic {typeDeclaration.Name}({string.Join(",", typeDeclaration.Properties.Select(_ => $"{_.type} _{_.name.ToLower()}"))}, {name}? parent = null) {{");
-
-        foreach (var prop in typeDeclaration.Properties)
+        if (typeDeclaration.Properties.Any())
         {
-            sb.AppendLine($"\t\tthis.{prop.name} = _{prop.name.ToLower()};");
-        }
-        sb.AppendLine("\t\tthis.Parent = parent;");
+            sb.AppendLine($"\tpublic {typeDeclaration.Name}({string.Join(",", typeDeclaration.Properties.Select(_ => $"{_.type} _{_.name.ToLower()}"))}, {name}? parent = null) {{");
 
-        sb.AppendLine("\t}");
+            foreach (var prop in typeDeclaration.Properties)
+            {
+                sb.AppendLine($"\t\tthis.{prop.name} = _{prop.name.ToLower()};");
+            }
+            sb.AppendLine("\t\tthis.Parent = parent;");
+
+            sb.AppendLine("\t}");
+        }
 
         return sb.ToString();
     }

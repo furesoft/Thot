@@ -10,6 +10,19 @@ namespace UnitTests;
 public class ParserTests
 {
     [TestMethod]
+    public void MyTestMethod()
+    {
+        var tree = new Parsing.AST.Block(new List<Parsing.AST.Expr>());
+
+        tree.Body.Add(new Parsing.AST.Group(new Parsing.AST.Unary(new Parsing.AST.Literal("42"))));
+        tree.Body.Add(new Parsing.AST.Unary(new Parsing.AST.Literal("42"), "+"));
+
+        var v = new Parsing.PrintVisitor();
+
+        var str = tree.Accept<string>(v);
+    }
+
+    [TestMethod]
     public void SimpleToken_Should_Pass()
     {
         var src = "token 'hello';";
