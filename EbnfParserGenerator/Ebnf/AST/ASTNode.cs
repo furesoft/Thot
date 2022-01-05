@@ -2,7 +2,7 @@
 
 public abstract class ASTNode
 {
-    public ASTNode Parent { get; set; }
+    public ASTNode? Parent { get; set; }
 
     public abstract T Accept<T>(IVisitor<T> visitor);
 }

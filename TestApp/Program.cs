@@ -27,7 +27,8 @@ public class Program
             Console.WriteLine(Tree?.Accept(new LexerGeneratorVisitor()));
 
             var ruleAnalysisVisitor = new RuleAnalysisVisitor();
-            if (Tree.Accept(ruleAnalysisVisitor))
+            bool? v = Tree?.Accept(ruleAnalysisVisitor);
+            if (v.HasValue && v.Value)
             {
                 foreach (var msg in ruleAnalysisVisitor.Messages)
                 {

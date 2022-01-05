@@ -64,7 +64,7 @@ public class ParserGenerator : ISourceGenerator
     {
         var parserGeneratorVisitor = new ParserGeneratorVisitor();
 
-        Tree.Accept(parserGeneratorVisitor);
+        Tree?.Accept(parserGeneratorVisitor);
 
         if (parserGeneratorVisitor.HasStartRule)
         {
@@ -83,7 +83,7 @@ public class ParserGenerator : ISourceGenerator
     {
         Type type = typeof(T);
 
-        string text = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream(type.Namespace + $".{type.Name.Replace("`3", "")}.cs")).ReadToEnd();
+        var text = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream(type.Namespace + $".{type.Name.Replace("`3", "")}.cs")).ReadToEnd();
 
         text = text.Replace($"namespace {type.Namespace};", $"namespace {newNamespace};");
 
@@ -98,7 +98,7 @@ public class ParserGenerator : ISourceGenerator
                 Location.Create(file.Path, new TextSpan(msg.Line, 1), new LinePositionSpan(new LinePosition(msg.Line - 1, msg.Column), new LinePosition(msg.Line, msg.Column)))));
     }
 
-    private static void ReportMessages(GeneratorExecutionContext context, AdditionalText file, List<Message>? Messages)
+    private static void ReportMessages(GeneratorExecutionContext context, AdditionalText file, List<Message> Messages)
     {
         foreach (var msg in Messages)
         {
