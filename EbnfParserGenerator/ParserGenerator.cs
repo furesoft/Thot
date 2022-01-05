@@ -32,6 +32,7 @@ public class ParserGenerator : ISourceGenerator
                         context.AddSource("TokenType.g.cs", new TokenTypeEnumVisitor().Text(Tree));
                         context.AddSource("Nodes.g.cs", new NodeGeneratorVisitor().Text(Tree));
                         context.AddSource("Lexer.g.cs", new LexerGeneratorVisitor().Text(Tree));
+                        context.AddSource("PrintVisitor.g.cs", new PrintVisitorGeneratorVisitor().Text(Tree));
 
                         var ruleAnalysisVisitor = new RuleAnalysisVisitor();
                         if (Tree.Accept(ruleAnalysisVisitor))

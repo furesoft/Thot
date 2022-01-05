@@ -25,6 +25,7 @@ public class Program
             Console.WriteLine(Tree?.Accept(new TokenTypeEnumVisitor()));
             Console.WriteLine(Tree?.Accept(new NodeGeneratorVisitor()));
             Console.WriteLine(Tree?.Accept(new LexerGeneratorVisitor()));
+            Console.WriteLine(Tree?.Accept(new PrintVisitorGeneratorVisitor()));
 
             var ruleAnalysisVisitor = new RuleAnalysisVisitor();
             bool? v = Tree?.Accept(ruleAnalysisVisitor);
