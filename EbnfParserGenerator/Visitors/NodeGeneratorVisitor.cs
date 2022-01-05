@@ -113,6 +113,8 @@ public class NodeGeneratorVisitor : IVisitor<string>
     {
         var sb = new StringBuilder();
 
+        sb.AppendLine($"using System.Collections.Generic;");
+        sb.AppendLine();
         sb.AppendLine($"namespace Parsing.AST;");
 
         sb.AppendLine($"public abstract class {typeDeclaration.Name} {{");
@@ -126,6 +128,9 @@ public class NodeGeneratorVisitor : IVisitor<string>
         {
             sb.AppendLine(GenerateSubType(subType, typeDeclaration.Name));
         }
+
+        var blockType = new SubTypeDeclaration("Block", new() { ("Body", $"List<{typeDeclaration.Name}>") });
+        sb.AppendLine(GenerateSubType(blockType, typeDeclaration.Name));
 
         return sb.ToString();
     }

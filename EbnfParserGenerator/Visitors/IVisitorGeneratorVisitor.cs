@@ -72,6 +72,8 @@ public class IVisitorGeneratorVisitor : IVisitor<string>
             }
         }
 
+        sb.AppendLine($"\tT Visit(Block block);");
+
         sb.AppendLine("}");
 
         return sb.ToString();
