@@ -12,7 +12,7 @@ public class ParserTests
     [TestMethod]
     public void Expression()
     {
-        var src = "'hello'+ | dd? | k+";
+        var src = "token 'hello';";
         var ast = Parser.Parse(src);
         Assert.IsNotNull(ast);
     }

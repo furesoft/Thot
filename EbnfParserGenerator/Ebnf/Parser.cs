@@ -12,9 +12,9 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
     {
         var result = new List<ASTNode>();
 
-        while (Peek(0).Type != (TokenType.EOF))
+        while (Peek(1).Type != (TokenType.EOF))
         {
-            var keyword = Peek(0);
+            var keyword = NextToken();
 
             if (keyword.Type == TokenType.TokenKeyword)
             {
@@ -30,10 +30,11 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
             }
             else
             {
-                result.Add(ParseExpression());
-                //Messages.Add(Message.Error($"Unknown keyword '{keyword.Text}'. Did you mean 'token', 'type' or 'grammar'?", keyword.Line, keyword.Column));
+                Messages.Add(Message.Error($"Unknown keyword '{keyword.Text}'. Did you mean 'token', 'type' or 'grammar'?", keyword.Line, keyword.Column));
             }
         }
+
+        Match(TokenType.Semicolon);
 
         return new Block(result);
     }
