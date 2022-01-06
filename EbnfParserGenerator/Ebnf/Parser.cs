@@ -30,10 +30,11 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
             }
             else
             {
-                Messages.Add(Message.Error($"Unknown keyword '{keyword.Text}'. Did you mean 'token', 'type' or 'grammar'?", keyword.Line, keyword.Column));
+                result.Add(ParseExpression());
+                //Messages.Add(Message.Error($"Unknown keyword '{keyword.Text}'. Did you mean 'token', 'type' or 'grammar'?", keyword.Line, keyword.Column));
             }
 
-            Expect(TokenType.Semicolon);
+            Match(TokenType.Semicolon);
         }
 
         return new Block(result);
@@ -43,7 +44,7 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
     {
         var expr = ParseUnary();
 
-        while (PeekMatch(TokenType.Pipe))
+        while (Peek(1).Type == TokenType.Pipe)
         {
             var right = ParseExpression();
 
@@ -67,13 +68,13 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
 
     private ASTNode ParseGrammarBlock()
     {
-        var nameToken = Expect(TokenType.Identifier);
+        var nameToken = Match(TokenType.Identifier);
 
-        var forToken = Expect(TokenType.For);
+        var forToken = Match(TokenType.For);
 
-        var typeToken = Expect(TokenType.Identifier);
+        var typeToken = Match(TokenType.Identifier);
 
-        Expect(TokenType.OpenCurly);
+        Match(TokenType.OpenCurly);
 
         if (typeToken.Type != TokenType.Identifier && forToken.Type != TokenType.For)
         {
@@ -85,12 +86,12 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
         var body = new Block();
         var result = new GrammarNode(nameToken.Text, typeToken.Text, body);
 
-        while (!PeekMatch(TokenType.CloseCurly, 0))
+        while (Peek(0).Type != TokenType.CloseCurly)
         {
             body.Body.Add(ParseRule(result));
         }
 
-        Expect(TokenType.CloseCurly);
+        Match(TokenType.CloseCurly);
 
         return result;
     }
@@ -99,7 +100,7 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
     {
         var expr = ParseExpression();
 
-        Expect(TokenType.CloseParen);
+        Match(TokenType.CloseParen);
 
         return new AST.Expressions.GroupExpr(expr);
     }
@@ -111,27 +112,25 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
 
     private Expr ParsePrimary()
     {
-        var token = Consume();
-
-        if (token.Type == TokenType.StringLiteral)
+        if (Current.Type == TokenType.StringLiteral)
         {
             return ParseStringLiteral();
         }
-        else if (token.Type == TokenType.OpenParen)
+        else if (Current.Type == TokenType.OpenParen)
         {
             return ParseGroup();
         }
-        else if (token.Type == TokenType.OpenSquare)
+        else if (Current.Type == TokenType.OpenSquare)
         {
             return ParseRange();
         }
-        else if (token.Type == TokenType.Identifier)
+        else if (Current.Type == TokenType.Identifier)
         {
             return ParseNameExpr();
         }
         else
         {
-            Messages.Add(Message.Error($"Unknown Expression. Did you mean one of [] '' \"\" () or identifier?", token.Line, token.Column));
+            Messages.Add(Message.Error($"Unknown Expression. Expected String, Group, CharakterClass or Identifier", Current.Line, Current.Column));
         }
 
         return new InvalidExpr();
@@ -145,7 +144,7 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
     {
         var expr = ParseRangeExpression();
 
-        Expect(TokenType.CloseParen);
+        Match(TokenType.CloseParen);
 
         return new AST.Expressions.CharacterClassExpression();
     }
@@ -157,13 +156,13 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
 
     private ASTNode ParseRule(GrammarNode parent)
     {
-        var nameToken = Expect(TokenType.Identifier);
+        var nameToken = Match(TokenType.Identifier);
 
-        Expect(TokenType.GoesTo);
+        Match(TokenType.GoesTo);
 
         var exprs = ParseExpressionList();
 
-        Expect(TokenType.Semicolon);
+        Match(TokenType.Semicolon);
 
         return new RuleNode(nameToken, exprs, parent);
     }
@@ -178,21 +177,21 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
     private ASTNode ParseSubTypeSpec(ASTNode parent)
     {
         // | typename(arg : type,...)
-        Expect(TokenType.Pipe);
+        Match(TokenType.Pipe);
 
         if (Previous().Type != TokenType.Pipe) return new InvalidNode();
 
-        var typename = Expect(TokenType.Identifier);
+        var typename = Match(TokenType.Identifier);
 
         var properties = new List<(string name, string type)>();
 
-        Expect(TokenType.OpenParen);
+        Match(TokenType.OpenParen);
 
-        while (Peek().Type != TokenType.Semicolon)
+        while (Peek(1).Type != TokenType.Semicolon)
         {
-            var name = Expect(TokenType.Identifier);
-            Expect(TokenType.Colon);
-            var type = Expect(TokenType.Identifier);
+            var name = Match(TokenType.Identifier);
+            Match(TokenType.Colon);
+            var type = Match(TokenType.Identifier);
 
             properties.Add((name.Text, type.Text));
 
@@ -202,11 +201,11 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
             }
             else
             {
-                Expect(TokenType.Comma);
+                Match(TokenType.Comma);
             }
         }
 
-        Expect(TokenType.CloseParen);
+        Match(TokenType.CloseParen);
 
         var result = new SubTypeDeclaration(typename.Text, properties);
         result.Parent = parent;
@@ -247,7 +246,7 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
     {
         var nameToken = Consume();
 
-        Expect(TokenType.GoesTo);
+        Match(TokenType.GoesTo);
 
         var subtypes = new List<ASTNode>();
 
@@ -264,7 +263,7 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
     {
         var expr = ParsePrimary();
 
-        var token = Peek();
+        var token = Peek(1);
 
         if (token.Type == TokenType.Plus)
         {

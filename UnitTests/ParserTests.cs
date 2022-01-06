@@ -10,6 +10,14 @@ namespace UnitTests;
 public class ParserTests
 {
     [TestMethod]
+    public void Expression()
+    {
+        var src = "'hello'";
+        var ast = Parser.Parse(src);
+        Assert.IsNotNull(ast);
+    }
+
+    [TestMethod]
     public void MyTestMethod()
     {
         var tree = new Parsing.AST.Block(new List<Parsing.AST.Expr>());

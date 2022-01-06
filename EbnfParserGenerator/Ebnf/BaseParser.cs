@@ -14,6 +14,8 @@ public abstract class BaseParser<TNode, TLexer, TParser>
         this.Messages = messages;
     }
 
+    protected Token Current => Peek(0);
+
     public static (TNode? Tree, List<Message> Messages) Parse(string? src)
     {
         if (string.IsNullOrEmpty(src) || src == null)
@@ -47,67 +49,30 @@ public abstract class BaseParser<TNode, TLexer, TParser>
         return token;
     }
 
-    protected Token Expect(TokenType type)
+    protected Token Match(TokenType kind)
     {
-        Match(type, 0);
+        if (Current.Type == kind)
+            return NextToken();
 
-        return Consume();
+        Messages.Add(Message.Error($"Expected {kind} but got {Current.Type}", Current.Line, Current.Column));
+
+        return Token.Invalid;
     }
 
-    protected void ExpectKeyword(string name)
+    protected Token NextToken()
     {
-        Token token = Peek();
-
-        Consume();
-
-        if (!token.Text.Equals(name))
-        {
-            Messages.Add(Message.Error($"Expected {name} but got {token.Text}", token.Line, token.Column));
-        }
+        var current = Current;
+        _position++;
+        return current;
     }
 
-    protected bool Match(TokenType type, int offset = 1)
+    protected Token Peek(int offset)
     {
-        Token token = Peek(offset);
-        var cond = token.Type == type;
+        var index = _position + offset;
+        if (index >= _tokens.Count)
+            return _tokens.Last();
 
-        if (!cond)
-        {
-            Messages.Add(Message.Error($"Expected {type} but got {token.Type}", token.Line, token.Column));
-        }
-
-        return cond;
-    }
-
-    protected bool Match(TokenType type, out Token token)
-    {
-        token = Peek();
-
-        var cond = token.Type == type;
-
-        if (!cond)
-        {
-            Messages.Add(Message.Error($"Expected {type} but got {token.Type}", token.Line, token.Column));
-        }
-
-        return cond;
-    }
-
-    protected Token Peek(int offset = 1)
-    {
-        if (_position + offset >= _tokens.Count)
-        {
-            return new Token(TokenType.EOF);
-        }
-
-        return _tokens[_position + offset];
-    }
-
-    protected bool PeekMatch(TokenType type, int offset = 1)
-    {
-        if (_position >= _tokens.Count) return false;
-
-        return _tokens[_position - offset].Type == type;
+        return _tokens[index];
     }
 
     protected Token Previous()
