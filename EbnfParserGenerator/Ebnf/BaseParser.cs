@@ -40,15 +40,6 @@ public abstract class BaseParser<TNode, TLexer, TParser>
         return node;
     }
 
-    protected Token Consume()
-    {
-        var token = Peek(0);
-
-        _position++;
-
-        return token;
-    }
-
     protected Token Match(TokenType kind)
     {
         if (Current.Type == kind)

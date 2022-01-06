@@ -14,7 +14,7 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
 
         while (Peek(0).Type != (TokenType.EOF))
         {
-            var keyword = Consume();
+            var keyword = Peek(0);
 
             if (keyword.Type == TokenType.TokenKeyword)
             {
@@ -33,8 +33,6 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
                 result.Add(ParseExpression());
                 //Messages.Add(Message.Error($"Unknown keyword '{keyword.Text}'. Did you mean 'token', 'type' or 'grammar'?", keyword.Line, keyword.Column));
             }
-
-            Match(TokenType.Semicolon);
         }
 
         return new Block(result);
@@ -44,8 +42,10 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
     {
         var expr = ParseUnary();
 
-        while (Peek(1).Type == TokenType.Pipe)
+        while (Peek(0).Type == TokenType.Pipe)
         {
+            NextToken();
+
             var right = ParseExpression();
 
             expr = new AlternateNode(expr, right);
@@ -107,7 +107,7 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
 
     private Expr ParseNameExpr()
     {
-        return new AST.Expressions.NameExpression(Previous());
+        return new AST.Expressions.NameExpression(NextToken());
     }
 
     private Expr ParsePrimary()
@@ -169,9 +169,7 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
 
     private Expr ParseStringLiteral()
     {
-        var token = Previous();
-
-        return new AST.Expressions.LiteralNode(token.Text);
+        return new AST.Expressions.LiteralNode(NextToken().Text);
     }
 
     private ASTNode ParseSubTypeSpec(ASTNode parent)
@@ -215,7 +213,7 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
 
     private ASTNode ParseTokenSpec()
     {
-        var token = Consume();
+        var token = NextToken();
 
         if (token.Type == TokenType.StringLiteral)
         {
@@ -244,7 +242,7 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
 
     private ASTNode ParseTypeSpec()
     {
-        var nameToken = Consume();
+        var nameToken = NextToken();
 
         Match(TokenType.GoesTo);
 
@@ -263,30 +261,22 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
     {
         var expr = ParsePrimary();
 
-        var token = Peek(1);
+        var token = NextToken();
 
         if (token.Type == TokenType.Plus)
         {
-            Consume();
-
             return new AST.Expressions.OneOrMoreExpression(expr);
         }
         else if (token.Type == TokenType.Star)
         {
-            Consume();
-
             return new AST.Expressions.ZeroOrMoreExpression(expr);
         }
         else if (token.Type == TokenType.Question)
         {
-            Consume();
-
             return new AST.Expressions.OptionalExpression(expr);
         }
         else if (token.Type == TokenType.Exclamation)
         {
-            Consume();
-
             return new AST.Expressions.NotExpression(expr);
         }
 
