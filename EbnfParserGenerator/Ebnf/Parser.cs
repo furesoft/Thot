@@ -175,7 +175,7 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
         return new AST.Expressions.LiteralNode(token.Text);
     }
 
-    private ASTNode ParseSubTypeSpec()
+    private ASTNode ParseSubTypeSpec(ASTNode parent)
     {
         // | typename(arg : type,...)
         Expect(TokenType.Pipe);
@@ -208,7 +208,10 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
 
         Expect(TokenType.CloseParen);
 
-        return new SubTypeDeclaration(typename.Text, properties);
+        var result = new SubTypeDeclaration(typename.Text, properties);
+        result.Parent = parent;
+
+        return result;
     }
 
     private ASTNode ParseTokenSpec()
@@ -248,12 +251,13 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
 
         var subtypes = new List<ASTNode>();
 
+        var typeDeclaration = new TypeDeclaration(nameToken.Text, new Block(subtypes));
         while (Peek(0).Type != TokenType.Semicolon)
         {
-            subtypes.Add(ParseSubTypeSpec());
+            subtypes.Add(ParseSubTypeSpec(typeDeclaration));
         }
 
-        return new TypeDeclaration(nameToken.Text, new Block(subtypes));
+        return typeDeclaration;
     }
 
     private Expr ParseUnary()

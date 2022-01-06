@@ -153,9 +153,23 @@ public class PrintVisitorGeneratorVisitor : IVisitor<string>
 
         sb.AppendLine($"\tpublic string Visit({subTypeDeclaration.Name} {subTypeDeclaration.Name.FirstCharToLower()}) {{");
 
-        sb.AppendLine($"\t\treturn $\"({subTypeDeclaration.Name} " + string.Join(" ", subTypeDeclaration.Properties.Select(_ => "{" + subTypeDeclaration.Name.FirstCharToLower() + "." + _.name + "}")) + ")\";");
+        sb.AppendLine($"\t\treturn $\"({subTypeDeclaration.Name} " + string.Join(" ", subTypeDeclaration.Properties.Select(_ => GeneratePropertyCall(subTypeDeclaration, _))) + ")\";");
 
         sb.AppendLine("\t}");
+
+        return sb.ToString();
+    }
+
+    private static string GeneratePropertyCall(SubTypeDeclaration subTypeDeclaration, (string name, string type) _)
+    {
+        var member = subTypeDeclaration.Name.FirstCharToLower() + "." + _.name;
+
+        var sb = new StringBuilder();
+        sb.Append("{(");
+
+        sb.Append(member); //ToDo: Need To Accept SubNodes
+
+        sb.Append(")}");
 
         return sb.ToString();
     }
