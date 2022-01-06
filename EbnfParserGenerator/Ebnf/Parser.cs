@@ -59,7 +59,7 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
     {
         var result = new Block();
 
-        while (Peek(0).Type != TokenType.Semicolon)
+        while (Previous().Type != TokenType.Semicolon)
         {
             result.Body.Add(ParseExpression());
         }
@@ -157,7 +157,7 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
 
     private ASTNode ParseRule(GrammarNode parent)
     {
-        var nameToken = Match(TokenType.Identifier);
+        var nameToken = NextToken();
 
         Match(TokenType.GoesTo);
 
@@ -231,7 +231,6 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
         _position--;
 
         var node = new TokenSpecNode((RuleNode)ParseRule(new GrammarNode(null, null, new())));
-        _position--;
 
         return node;
     }
