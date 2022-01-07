@@ -12,7 +12,7 @@ public class ParserTests
     [TestMethod]
     public void Expression()
     {
-        var src = "grammar hello for Expr { start -> main; main -> 'hello'; };";
+        var src = "type Expr -> | Literal(Value : object);";
         var ast = Parser.Parse(src);
         Assert.IsNotNull(ast);
     }

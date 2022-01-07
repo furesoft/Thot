@@ -10,7 +10,7 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
 
     protected override ASTNode Start()
     {
-        var result = new List<ASTNode>();
+        var result = new Block(new List<ASTNode>());
 
         while (Peek(1).Type != (TokenType.EOF))
         {
@@ -18,15 +18,15 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
 
             if (keyword.Type == TokenType.TokenKeyword)
             {
-                result.Add(ParseTokenSpec());
+                result.Body.Add(ParseTokenSpec(result));
             }
             else if (keyword.Type == TokenType.TypeKeyword)
             {
-                result.Add(ParseTypeSpec());
+                result.Body.Add(ParseTypeSpec(result));
             }
             else if (keyword.Type == TokenType.GrammarKeyword)
             {
-                result.Add(ParseGrammarBlock());
+                result.Body.Add(ParseGrammarBlock(result));
             }
             else
             {
@@ -36,7 +36,7 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
 
         Match(TokenType.Semicolon);
 
-        return new Block(result);
+        return result;
     }
 
     private Expr ParseExpression()
@@ -67,7 +67,7 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
         return result;
     }
 
-    private ASTNode ParseGrammarBlock()
+    private ASTNode ParseGrammarBlock(ASTNode parent)
     {
         var nameToken = Match(TokenType.Identifier);
 
@@ -93,6 +93,8 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
         }
 
         Match(TokenType.CloseCurly);
+
+        result.Parent = parent;
 
         return result;
     }
@@ -212,47 +214,49 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
         return result;
     }
 
-    private ASTNode ParseTokenSpec()
+    private ASTNode ParseTokenSpec(ASTNode parent)
     {
         var token = NextToken();
 
         if (token.Type == TokenType.StringLiteral)
         {
-            return ParseTokenSymbolSpec();
+            return ParseTokenSymbolSpec(parent);
         }
         else
         {
-            return ParseTokenSpecDefinition();
+            return ParseTokenSpecDefinition(parent);
         }
     }
 
-    private ASTNode ParseTokenSpecDefinition()
+    private ASTNode ParseTokenSpecDefinition(ASTNode parent)
     {
         _position--;
 
         var node = new TokenSpecNode((RuleNode)ParseRule(new GrammarNode(null, null, new())));
-
+        node.Parent = parent;
         return node;
     }
 
-    private ASTNode ParseTokenSymbolSpec()
+    private ASTNode ParseTokenSymbolSpec(ASTNode parent)
     {
-        return new TokenSymbolNode(Previous().Text);
+        return new TokenSymbolNode(Previous().Text) { Parent = parent };
     }
 
-    private ASTNode ParseTypeSpec()
+    private ASTNode ParseTypeSpec(ASTNode parent)
     {
-        var nameToken = NextToken();
+        var nameToken = Match(TokenType.Identifier);
 
         Match(TokenType.GoesTo);
 
         var subtypes = new List<ASTNode>();
 
-        var typeDeclaration = new TypeDeclaration(nameToken.Text, new Block(subtypes));
+        var typeDeclaration = new TypeDeclaration(nameToken.Text, new Block(subtypes)) { Parent = parent };
         while (Peek(0).Type != TokenType.Semicolon)
         {
-            subtypes.Add(ParseSubTypeSpec(typeDeclaration));
+            subtypes.Add(ParseSubTypeSpec(typeDeclaration.Block));
         }
+
+        typeDeclaration.Block.Parent = typeDeclaration;
 
         return typeDeclaration;
     }
