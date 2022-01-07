@@ -12,7 +12,7 @@ public class ParserTests
     [TestMethod]
     public void Expression()
     {
-        var src = "token id -> '12';";
+        var src = "grammar hello for Expr { start -> main; main -> 'hello'; };";
         var ast = Parser.Parse(src);
         Assert.IsNotNull(ast);
     }
