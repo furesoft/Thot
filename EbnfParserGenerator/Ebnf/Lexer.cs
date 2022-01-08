@@ -42,8 +42,12 @@ public class Lexer : BaseLexer
         {
             if (Peek(1) == '>')
             {
+                int oldcolumn = _column;
                 Advance();
-                return new Token(TokenType.GoesTo, "->", _position, ++_position, _line, ++_column);
+                _column++;
+                _column++;
+
+                return new Token(TokenType.GoesTo, "->", _position, ++_position, _line, oldcolumn);
             }
             else
             {
@@ -52,7 +56,7 @@ public class Lexer : BaseLexer
         }
         else if (_symbolTokens.ContainsKey(Current()))
         {
-            return new Token(_symbolTokens[Current()], Current().ToString(), Advance(), _position, _line, ++_column);
+            return new Token(_symbolTokens[Current()], Current().ToString(), Advance(), _position, _line, _column++);
         }
         else if (Current() == '\'')
         {
@@ -86,13 +90,15 @@ public class Lexer : BaseLexer
         else if (char.IsDigit(Current()))
         {
             int oldpos = _position;
+            int oldcolumn = _column;
 
             while (char.IsDigit(Peek(0)))
             {
                 Advance();
+                _column++;
             }
 
-            return new Token(TokenType.Number, _source.Substring(oldpos, _position - oldpos), oldpos, _position, _line, _column);
+            return new Token(TokenType.Number, _source.Substring(oldpos, _position - oldpos), oldpos, _position, _line, oldcolumn);
         }
         else
         {
@@ -100,14 +106,16 @@ public class Lexer : BaseLexer
 
             if (char.IsLetter(Current()))
             {
+                int oldcolumn = _column;
                 while (char.IsLetterOrDigit(Peek(0)))
                 {
                     Advance();
+                    _column++;
                 }
 
                 var tokenText = _source.Substring(oldpos, _position - oldpos);
 
-                return new Token(TokenUtils.GetTokenType(tokenText), tokenText, oldpos, _position, _line, _column);
+                return new Token(TokenUtils.GetTokenType(tokenText), tokenText, oldpos, _position, _line, oldcolumn);
             }
 
             ReportError();

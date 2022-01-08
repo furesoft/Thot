@@ -100,6 +100,8 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
 
     private Expr ParseGroup()
     {
+        Match(TokenType.OpenParen);
+
         var expr = ParseExpression();
 
         Match(TokenType.CloseParen);
