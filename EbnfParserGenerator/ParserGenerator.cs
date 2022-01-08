@@ -35,11 +35,12 @@ public class ParserGenerator : ISourceGenerator
                         context.AddSource("PrintVisitor.g.cs", new PrintVisitorGeneratorVisitor().Text(Tree));
 
                         var ruleAnalysisVisitor = new RuleAnalysisVisitor();
-                        if (Tree.Accept(ruleAnalysisVisitor))
+                        var analasysResult = Tree.Accept(ruleAnalysisVisitor);
+                        if (analasysResult.HasValue && analasysResult.Value)
                         {
                             ReportMessages(context, file, ruleAnalysisVisitor.Messages);
                         }
-                        else
+                        else if (analasysResult.HasValue && !analasysResult.Value)
                         {
                             GenerateParser(context, Tree);
                         }

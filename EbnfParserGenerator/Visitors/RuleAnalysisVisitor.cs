@@ -4,71 +4,76 @@ using EbnfParserGenerator.Ebnf.AST.Expressions;
 
 namespace EbnfParserGenerator.Visitors;
 
-public class RuleAnalysisVisitor : IVisitor<bool>
+public class RuleAnalysisVisitor : IVisitor<bool?>
 {
     private readonly List<string> _ruleDefintionNames = new();
     public List<Message> Messages { get; set; } = new();
 
-    public bool Visit(RuleNode rule)
+    public bool? Visit(RuleNode rule)
     {
         return rule.Body.Accept(this);
     }
 
-    public bool Visit(InvalidNode invalidNode)
+    public bool? Visit(InvalidNode invalidNode)
     {
         return false;
     }
 
-    public bool Visit(LiteralNode literal)
+    public bool? Visit(LiteralNode literal)
     {
         return false;
     }
 
-    public bool Visit(TypeDeclaration typeDeclaration)
+    public bool? Visit(TypeDeclaration typeDeclaration)
     {
         return false;
     }
 
-    public bool Visit(SubTypeDeclaration subTypeDeclaration)
+    public bool? Visit(SubTypeDeclaration subTypeDeclaration)
     {
         return false;
     }
 
-    public bool Visit(CharacterClassExpression charackterClassExpression)
+    public bool? Visit(CharacterClassExpression charackterClassExpression)
     {
         return false;
     }
 
-    public bool Visit(InvalidExpr invalidExpr)
+    public bool? Visit(InvalidExpr invalidExpr)
     {
         return false;
     }
 
-    public bool Visit(GroupExpr groupExpr)
+    public bool? Visit(GroupExpr groupExpr)
     {
         return groupExpr.Expression.Accept(this);
     }
 
-    public bool Visit(TokenSymbolNode tokenSymbolNode)
+    public bool? Visit(TokenSymbolNode tokenSymbolNode)
     {
         return false;
     }
 
-    public bool Visit(Block block)
+    public bool? Visit(Block block)
     {
-        return block.Body.Select(_ => _.Accept(this)).Aggregate((f, s) => f || s);
+        if (!block.Body.OfType<GrammarNode>().Any())
+        {
+            return null;
+        }
+
+        return block.Body.Select(_ => _.Accept(this)).Aggregate((f, s) => f.Value || s.Value);
     }
 
-    public bool Visit(OptionalExpression optionalExpression)
+    public bool? Visit(OptionalExpression optionalExpression)
     {
         return optionalExpression.Expression.Accept(this);
     }
 
-    public bool Visit(GrammarNode grammarNode)
+    public bool? Visit(GrammarNode grammarNode)
     {
         var collectResult = CollectRules(grammarNode.Body);
 
-        if (!collectResult)
+        if (!collectResult.Value)
         {
             return grammarNode.Body.Accept(this);
         }
@@ -76,7 +81,7 @@ public class RuleAnalysisVisitor : IVisitor<bool>
         return false;
     }
 
-    public bool Visit(NameExpression nameExpression)
+    public bool? Visit(NameExpression nameExpression)
     {
         var result = !_ruleDefintionNames.Contains(nameExpression.Name);
 
@@ -88,42 +93,42 @@ public class RuleAnalysisVisitor : IVisitor<bool>
         return result;
     }
 
-    public bool Visit(ZeroOrMoreExpression zeroOrMoreExpression)
+    public bool? Visit(ZeroOrMoreExpression zeroOrMoreExpression)
     {
         return zeroOrMoreExpression.Expression.Accept(this);
     }
 
-    public bool Visit(CharackterClassRange charackterClassRange)
+    public bool? Visit(CharackterClassRange charackterClassRange)
     {
         return false;
     }
 
-    public bool Visit(OneOrMoreExpression oneOrMoreExpression)
+    public bool? Visit(OneOrMoreExpression oneOrMoreExpression)
     {
         return oneOrMoreExpression.Expression.Accept(this);
     }
 
-    public bool Visit(AlternateNode alternateNode)
+    public bool? Visit(AlternateNode alternateNode)
     {
-        var left = alternateNode.Left.Accept(this);
-        var right = alternateNode.Right.Accept(this);
+        var left = alternateNode.Left.Accept(this).Value;
+        var right = alternateNode.Right.Accept(this).Value;
 
         return left || right;
     }
 
-    public bool Visit(NotExpression notExpression)
+    public bool? Visit(NotExpression notExpression)
     {
         return notExpression.Expression.Accept(this);
     }
 
-    public bool Visit(TokenSpecNode tokenSpecNode)
+    public bool? Visit(TokenSpecNode tokenSpecNode)
     {
         return false;
     }
 
-    private bool CollectRules(Block body)
+    private bool? CollectRules(Block body)
     {
-        bool hasError = false;
+        bool? hasError = false;
         foreach (var rule in body.Body.OfType<RuleNode>())
         {
             if (_ruleDefintionNames.Contains(rule.Name))
