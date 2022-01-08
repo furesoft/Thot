@@ -2,12 +2,12 @@
 
 public class Block : ASTNode
 {
-    public Block(List<ASTNode> body)
+    public Block(List<ASTNode> body, ASTNode? parent = null) : base(parent)
     {
         Body = body;
     }
 
-    public Block()
+    public Block(ASTNode? parent = null) : base(parent)
     {
         Body = new List<ASTNode>();
     }

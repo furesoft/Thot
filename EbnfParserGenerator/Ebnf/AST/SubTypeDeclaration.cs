@@ -2,7 +2,7 @@
 
 public class SubTypeDeclaration : ASTNode
 {
-    public SubTypeDeclaration(string name, List<(string name, string type)> properties)
+    public SubTypeDeclaration(string name, List<(string name, string type)> properties, ASTNode? parent = null) : base(parent)
     {
         Name = name;
         Properties = properties;

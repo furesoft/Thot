@@ -2,7 +2,7 @@
 
 public class GroupExpr : Expr
 {
-    public GroupExpr(Expr expression)
+    public GroupExpr(Expr expression, ASTNode? parent = null) : base(parent)
     {
         Expression = expression;
     }

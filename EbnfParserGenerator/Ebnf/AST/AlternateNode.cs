@@ -2,7 +2,7 @@
 
 public class AlternateNode : Expr
 {
-    public AlternateNode(Expr left, Expr right)
+    public AlternateNode(Expr left, Expr right, ASTNode? parent = null) : base(parent)
     {
         Left = left;
         Right = right;

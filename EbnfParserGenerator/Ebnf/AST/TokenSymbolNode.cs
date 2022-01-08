@@ -2,7 +2,7 @@
 
 public class TokenSymbolNode : ASTNode
 {
-    public TokenSymbolNode(string symbol)
+    public TokenSymbolNode(string symbol, ASTNode? parent = null) : base(parent)
     {
         Symbol = symbol;
         Name = symbol.FirstCharToUpper();
@@ -18,6 +18,6 @@ public class TokenSymbolNode : ASTNode
 
     public override string ToString()
     {
-        return $"@token '{Symbol}';";
+        return $"token '{Symbol}';";
     }
 }

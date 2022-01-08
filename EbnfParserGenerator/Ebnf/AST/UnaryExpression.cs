@@ -2,7 +2,7 @@
 
 public abstract class UnaryExpression : Expr
 {
-    protected UnaryExpression(string symbol, Expr expression)
+    protected UnaryExpression(string symbol, Expr expression, ASTNode? parent = null) : base(parent)
     {
         Symbol = symbol;
         Expression = expression;

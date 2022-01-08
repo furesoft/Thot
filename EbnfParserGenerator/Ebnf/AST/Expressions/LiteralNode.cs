@@ -2,7 +2,7 @@
 
 public class LiteralNode : Expr
 {
-    public LiteralNode(object value)
+    public LiteralNode(object value, ASTNode? parent = null) : base(parent)
     {
         Value = value;
     }

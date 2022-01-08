@@ -2,11 +2,10 @@
 
 public class RuleNode : ASTNode
 {
-    public RuleNode(Token nameToken, Block body, ASTNode parent)
+    public RuleNode(Token nameToken, Block body, ASTNode? parent = null) : base(parent)
     {
         Name = nameToken.Text;
         Body = body;
-        Parent = parent;
         NameToken = nameToken;
     }
 

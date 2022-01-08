@@ -2,7 +2,7 @@
 
 public class TokenSpecNode : ASTNode
 {
-    public TokenSpecNode(RuleNode rule)
+    public TokenSpecNode(RuleNode rule, ASTNode? parent = null) : base(parent)
     {
         Rule = rule;
     }
@@ -16,6 +16,6 @@ public class TokenSpecNode : ASTNode
 
     public override string ToString()
     {
-        return $"@token {Rule};";
+        return $"token {Rule};";
     }
 }

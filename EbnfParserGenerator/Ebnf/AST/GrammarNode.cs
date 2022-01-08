@@ -4,7 +4,7 @@ namespace EbnfParserGenerator.Ebnf.AST;
 
 public class GrammarNode : ASTNode
 {
-    public GrammarNode(string name, string type, Block body)
+    public GrammarNode(string name, string type, Block body, ASTNode? parent = null) : base(parent)
     {
         Name = name;
         Type = type;
