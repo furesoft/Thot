@@ -1,2 +1,5 @@
 [ ] Expr sequence implementieren:
 	main -> "if" "(" condition ")";
+
+[ ] Fix grammr block (rule?)
+[ ] Fix token specific (rule?)

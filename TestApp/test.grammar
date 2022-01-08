@@ -2,16 +2,8 @@
 token "def";
 token "world";
 
-token identifier -> "a";
-
 type Expr -> 
     | Literal(Value : object)
     | Binary(Left : Expr, Operator : string, Right : Expr)
     | Unary(Inner : Expr, Operator : string)
     | Group(Inner : Expr);
-
-
-grammar Main for Expr {
-    start -> hello;
-    hello -> "world";
-};

@@ -34,8 +34,6 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
             }
         }
 
-        Match(TokenType.Semicolon);
-
         return result;
     }
 
@@ -61,6 +59,7 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
 
         while (Previous().Type != TokenType.Semicolon)
         {
+            _position--;
             result.Body.Add(ParseExpression());
         }
 
@@ -93,6 +92,7 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
         }
 
         Match(TokenType.CloseCurly);
+        Match(TokenType.Semicolon);
 
         result.Parent = parent;
 
@@ -163,11 +163,11 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
 
         Match(TokenType.GoesTo);
 
-        var exprs = ParseExpressionList();
+        var exprs = ParseExpression();
 
         Match(TokenType.Semicolon);
 
-        return new RuleNode(nameToken, exprs, parent);
+        return new RuleNode(nameToken, new Block(new List<ASTNode>() { exprs }), parent);
     }
 
     private Expr ParseStringLiteral()
@@ -239,7 +239,10 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
 
     private ASTNode ParseTokenSymbolSpec(ASTNode parent)
     {
-        return new TokenSymbolNode(Previous().Text) { Parent = parent };
+        var result = new TokenSymbolNode(Previous().Text) { Parent = parent };
+        Match(TokenType.Semicolon);
+
+        return result;
     }
 
     private ASTNode ParseTypeSpec(ASTNode parent)
@@ -257,6 +260,8 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
         }
 
         typeDeclaration.Block.Parent = typeDeclaration;
+
+        Match(TokenType.Semicolon);
 
         return typeDeclaration;
     }
