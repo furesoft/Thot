@@ -270,22 +270,30 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
     {
         var expr = ParsePrimary();
 
-        var token = NextToken();
+        var token = Peek(0);
 
         if (token.Type == TokenType.Plus)
         {
+            NextToken();
+
             return new AST.Expressions.OneOrMoreExpression(expr);
         }
         else if (token.Type == TokenType.Star)
         {
+            NextToken();
+
             return new AST.Expressions.ZeroOrMoreExpression(expr);
         }
         else if (token.Type == TokenType.Question)
         {
+            NextToken();
+
             return new AST.Expressions.OptionalExpression(expr);
         }
         else if (token.Type == TokenType.Exclamation)
         {
+            NextToken();
+
             return new AST.Expressions.NotExpression(expr);
         }
 

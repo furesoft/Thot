@@ -36,11 +36,11 @@ public class ParserGenerator : ISourceGenerator
 
                         var ruleAnalysisVisitor = new RuleAnalysisVisitor();
                         var analasysResult = Tree.Accept(ruleAnalysisVisitor);
-                        if (analasysResult.HasValue && analasysResult.Value)
+                        if (!ruleAnalysisVisitor.HasNoGrammarBlock && analasysResult)
                         {
                             ReportMessages(context, file, ruleAnalysisVisitor.Messages);
                         }
-                        else if (analasysResult.HasValue && !analasysResult.Value)
+                        else if (!ruleAnalysisVisitor.HasNoGrammarBlock && !analasysResult)
                         {
                             GenerateParser(context, Tree);
                         }

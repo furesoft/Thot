@@ -10,5 +10,5 @@ type Expr ->
 
 grammar Main for Expr {
     start -> main;
-    main -> "hello";
+    main -> "hello" | "world"+ | "some"*;
 };
