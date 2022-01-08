@@ -53,9 +53,9 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
         return expr;
     }
 
-    private Block ParseExpressionList()
+    private Block ParseExpressionList(ASTNode parent)
     {
-        var result = new Block();
+        var result = new Block(parent);
 
         while (Previous().Type != TokenType.Semicolon)
         {
@@ -84,7 +84,8 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
         }
 
         var body = new Block();
-        var result = new GrammarNode(nameToken.Text, typeToken.Text, body);
+        var result = new GrammarNode(nameToken.Text, typeToken.Text, body, parent);
+        body.Parent = result;
 
         while (Peek(0).Type != TokenType.CloseCurly)
         {
@@ -93,8 +94,6 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
 
         Match(TokenType.CloseCurly);
         Match(TokenType.Semicolon);
-
-        result.Parent = parent;
 
         return result;
     }
@@ -208,10 +207,7 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
 
         Match(TokenType.CloseParen);
 
-        var result = new SubTypeDeclaration(typename.Text, properties);
-        result.Parent = parent;
-
-        return result;
+        return new SubTypeDeclaration(typename.Text, properties, parent);
     }
 
     private ASTNode ParseTokenSpec(ASTNode parent)
@@ -232,14 +228,13 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
     {
         _position--;
 
-        var node = new TokenSpecNode((RuleNode)ParseRule(new GrammarNode(null, null, new())));
-        node.Parent = parent;
+        var node = new TokenSpecNode((RuleNode)ParseRule(new GrammarNode(null, null, new())), parent);
         return node;
     }
 
     private ASTNode ParseTokenSymbolSpec(ASTNode parent)
     {
-        var result = new TokenSymbolNode(Previous().Text) { Parent = parent };
+        var result = new TokenSymbolNode(Previous().Text, parent);
         Match(TokenType.Semicolon);
 
         return result;
@@ -253,7 +248,7 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
 
         var subtypes = new List<ASTNode>();
 
-        var typeDeclaration = new TypeDeclaration(nameToken.Text, new Block(subtypes)) { Parent = parent };
+        var typeDeclaration = new TypeDeclaration(nameToken.Text, new Block(subtypes), parent);
         while (Peek(0).Type != TokenType.Semicolon)
         {
             subtypes.Add(ParseSubTypeSpec(typeDeclaration.Block));
