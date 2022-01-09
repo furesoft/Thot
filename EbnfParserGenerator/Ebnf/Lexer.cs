@@ -25,17 +25,23 @@ public class Lexer : BaseLexer
 
     protected override Token NextToken()
     {
+        if (Current() == '\n' || Current() == '\r')
+        {
+            _line++;
+            _column = 1;
+            _position++;
+
+            if (Peek(0) == '\n')
+            {
+                _position++;
+            }
+        }
+
         SkipWhitespaces();
 
         if (_position >= _source.Length)
         {
             return new Token(TokenType.EOF, "\0", _position, _position, _line, 0);
-        }
-
-        if (Current() == '\n' || Current() == '\r')
-        {
-            _line++;
-            _column = 1;
         }
 
         if (Current() == '-' && _source.Length >= 2)

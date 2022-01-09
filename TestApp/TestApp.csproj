@@ -8,15 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="test.grammar" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <AdditionalFiles Include="test.grammar" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\EbnfParserGenerator\EbnfParserGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="test.grammar">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

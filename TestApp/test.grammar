@@ -5,10 +5,10 @@ token "world";
 type Expr -> 
     | Literal(Value : object)
     | Binary(Left : Expr, Operator : string, Right : Expr)
-    | Unary(Inner : Expr, Operator : string)
+     Unary(Inner : Expr, Operator : string)
     | Group(Inner : Expr);
 
-grammar Main for Expr {
+grammar Main  Expr {
     start -> main;
     main -> "hello" | "world"+ | "some"*;
 };

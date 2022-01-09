@@ -181,7 +181,15 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
         // | typename(arg : type,...)
         Match(TokenType.Pipe);
 
-        if (Previous().Type != TokenType.Pipe) return new InvalidNode();
+        if (Previous().Type != TokenType.Pipe)
+        {
+            while (Current.Type != TokenType.Semicolon)
+            {
+                _position++;
+            }
+
+            return new InvalidNode();
+        }
 
         var typename = Match(TokenType.Identifier);
 
