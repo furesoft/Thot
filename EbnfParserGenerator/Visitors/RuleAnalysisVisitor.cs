@@ -57,11 +57,25 @@ public class RuleAnalysisVisitor : IVisitor<bool>
 
     public bool Visit(Block block)
     {
-        if (!block.Body.OfType<GrammarNode>().Any())
+        var grammarNode = block.Body.OfType<GrammarNode>().FirstOrDefault();
+        if (block.Parent is null)
         {
-            HasNoGrammarBlock = true;
+            if (grammarNode == null)
+            {
+                HasNoGrammarBlock = true;
 
-            return false;
+                return false;
+            }
+            else
+            {
+                var rules = grammarNode?.Body.Body.OfType<RuleNode>();
+
+                if (!rules.Any() || rules.FirstOrDefault(_ => _.Name == "start") == null)
+                {
+                    Messages.Add(Message.Error("Grammar has to define a 'start' rule", 1, 1));
+                    return true;
+                }
+            }
         }
 
         return block.Body.Select(_ => _.Accept(this)).Aggregate((f, s) => f || s);

@@ -46,7 +46,7 @@ public class ParserGenerator : ISourceGenerator
                         }
                         else if (!ruleAnalysisVisitor.HasNoGrammarBlock && !analasysResult)
                         {
-                            GenerateParser(context, Tree);
+                            GenerateParser(context, Tree, file);
                         }
                     }
                 }
@@ -66,7 +66,7 @@ public class ParserGenerator : ISourceGenerator
     {
     }
 
-    private static void GenerateParser(GeneratorExecutionContext context, ASTNode? Tree)
+    private static void GenerateParser(GeneratorExecutionContext context, ASTNode? Tree, AdditionalText file)
     {
         var parserGeneratorVisitor = new ParserGeneratorVisitor();
 
@@ -78,10 +78,7 @@ public class ParserGenerator : ISourceGenerator
         }
         else
         {
-            context.ReportDiagnostic(
-                Diagnostic.Create(
-                    new DiagnosticDescriptor("EBNF2", "Semantic Error",
-                    "A grammar has to define a 'start' rule", "Semantic", DiagnosticSeverity.Error, true), null));
+            ReportError(context, file, Message.Error("A grammar has to define a 'start' rule", 1, 1));
         }
     }
 

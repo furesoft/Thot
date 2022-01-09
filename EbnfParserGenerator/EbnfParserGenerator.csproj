@@ -5,6 +5,13 @@
 	  <LangVersion>latest</LangVersion>
 	<ImplicitUsings>enable</ImplicitUsings>
 	<Nullable>enable</Nullable>
+	  <!-- Special properties for analyzer packages. -->
+	  <IncludeBuildOutput>false</IncludeBuildOutput>
+	  <IncludeSymbols>false</IncludeSymbols>
+	  <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+	  <UseNETCoreGenerator>true</UseNETCoreGenerator>
+	  <IsRoslynComponent>true</IsRoslynComponent>
+	  <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
   </PropertyGroup>
 
   <ItemGroup>

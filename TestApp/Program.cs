@@ -34,7 +34,7 @@ public class Program
                 Console.WriteLine(msg);
             }
         }
-        else
+        else if (!ruleAnalysisVisitor.HasNoGrammarBlock)
         {
             Console.WriteLine(Tree?.Accept(new ParserGeneratorVisitor()));
         }
