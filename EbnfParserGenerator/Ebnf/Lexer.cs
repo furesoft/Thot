@@ -124,11 +124,6 @@ public class Lexer : BaseLexer
         return Token.Invalid;
     }
 
-    private bool isAtEnd()
-    {
-        return _position >= _source.Length;
-    }
-
     private void SkipWhitespaces()
     {
         while (char.IsWhiteSpace(Current()) && _position <= _source.Length)
