@@ -1,14 +1,9 @@
-﻿token "fun";
-token "def";
-token "world";
+﻿grammar Main for Expr {
 
-type Expr -> 
-    | Literal(Value : object)
-    | Binary(Left : Expr, Operator : string, Right : Expr)
-     Unary(Inner : Expr, Operator : string)
-    | Group(Inner : Expr);
-
-grammar Main for Expr {
-    start -> main;
-    main -> "hello" | "world"+ | "some"*;
 };
+
+token "hello";
+token "world";
+token "hello2";
+
+type Expr -> | Something();

@@ -26,7 +26,7 @@ public class Program
         Console.WriteLine(Tree?.Accept(new PrintVisitorGeneratorVisitor()));
 
         var ruleAnalysisVisitor = new RuleAnalysisVisitor();
-        bool? v = Tree?.Accept(ruleAnalysisVisitor);
+        var v = Tree?.Accept(ruleAnalysisVisitor);
         if (v.HasValue && v.Value)
         {
             foreach (var msg in ruleAnalysisVisitor.Messages)

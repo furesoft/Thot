@@ -25,20 +25,6 @@ public class Lexer : BaseLexer
 
     protected override Token NextToken()
     {
-        if (Current() == '\r')
-        {
-            _line++;
-            _column = 1;
-            _position++;
-
-            if (Peek(0) == '\n')
-            {
-                _position++;
-            }
-
-            Console.Error.WriteLine(_line);
-        }
-
         SkipWhitespaces();
 
         if (_position >= _source.Length)
@@ -50,7 +36,7 @@ public class Lexer : BaseLexer
         {
             if (Peek(1) == '>')
             {
-                int oldcolumn = _column;
+                var oldcolumn = _column;
                 Advance();
                 _column++;
                 _column++;
@@ -68,8 +54,8 @@ public class Lexer : BaseLexer
         }
         else if (Current() == '\'')
         {
-            int oldpos = ++_position;
-            int oldColumn = _column;
+            var oldpos = ++_position;
+            var oldColumn = _column;
 
             while (Peek() != '\'') //ToDo: add end of file check
             {
@@ -83,8 +69,8 @@ public class Lexer : BaseLexer
         }
         else if (Current() == '"')
         {
-            int oldpos = ++_position;
-            int oldColumn = _column;
+            var oldpos = ++_position;
+            var oldColumn = _column;
             while (Peek() != '"') // ToDo: add end of file check
             {
                 Advance();
@@ -97,8 +83,8 @@ public class Lexer : BaseLexer
         }
         else if (char.IsDigit(Current()))
         {
-            int oldpos = _position;
-            int oldcolumn = _column;
+            var oldpos = _position;
+            var oldcolumn = _column;
 
             while (char.IsDigit(Peek(0)))
             {
@@ -110,11 +96,11 @@ public class Lexer : BaseLexer
         }
         else
         {
-            int oldpos = _position;
+            var oldpos = _position;
 
             if (char.IsLetter(Current()))
             {
-                int oldcolumn = _column;
+                var oldcolumn = _column;
                 while (char.IsLetterOrDigit(Peek(0)))
                 {
                     Advance();
@@ -136,8 +122,22 @@ public class Lexer : BaseLexer
     {
         while (char.IsWhiteSpace(Current()) && _position <= _source.Length)
         {
-            Advance();
-            _column++;
+            if (Current() == '\r')
+            {
+                _line++;
+                _column = 1;
+                Advance();
+
+                if (Current() == '\n')
+                {
+                    Advance();
+                }
+            }
+            else
+            {
+                Advance();
+                _column++;
+            }
         }
     }
 }

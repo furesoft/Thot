@@ -68,7 +68,7 @@ public class ParserTests
         Assert.IsTrue(node is TypeDeclaration t && t.Name == "Expr" && t.Block.Body.Count == 1);
     }
 
-    private void AssertNoError((ASTNode Tree, List<Message> Messages) p)
+    private static void AssertNoError((ASTNode Tree, List<Message> Messages) p)
     {
         Assert.IsTrue(p.Messages.Count == 0);
         Assert.IsNotNull(p.Tree);
