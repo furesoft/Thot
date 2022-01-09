@@ -13,6 +13,8 @@ public class ParserGenerator : ISourceGenerator
 {
     public void Execute(GeneratorExecutionContext context)
     {
+        bool hasError = false;
+
         foreach (var file in context.AdditionalFiles)
         {
             if (file.Path.EndsWith(".grammar"))
@@ -25,6 +27,7 @@ public class ParserGenerator : ISourceGenerator
                     if (Messages.Any())
                     {
                         ReportMessages(context, file, Messages);
+                        hasError = true;
                     }
                     else
                     {
@@ -49,7 +52,7 @@ public class ParserGenerator : ISourceGenerator
             }
         }
 
-        if (context.AdditionalFiles.Any())
+        if (context.AdditionalFiles.Any() && !hasError)
         {
             context.AddSource("Message.g.cs", LoadFromResource<Message>("Parsing"));
             context.AddSource("Token.g.cs", LoadFromResource<Token>("Parsing"));

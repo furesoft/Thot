@@ -8,7 +8,7 @@ type Expr ->
      Unary(Inner : Expr, Operator : string)
     | Group(Inner : Expr);
 
-grammar Main  Expr {
+grammar Main for Expr {
     start -> main;
     main -> "hello" | "world"+ | "some"*;
 };

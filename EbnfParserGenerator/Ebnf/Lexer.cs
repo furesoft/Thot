@@ -25,7 +25,7 @@ public class Lexer : BaseLexer
 
     protected override Token NextToken()
     {
-        if (Current() == '\n' || Current() == '\r')
+        if (Current() == '\r')
         {
             _line++;
             _column = 1;
@@ -35,6 +35,8 @@ public class Lexer : BaseLexer
             {
                 _position++;
             }
+
+            Console.Error.WriteLine(_line);
         }
 
         SkipWhitespaces();
