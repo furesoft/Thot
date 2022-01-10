@@ -8,25 +8,27 @@ public abstract class BaseParser<TNode, TLexer, TParser>
     protected int _position = 0;
     private readonly List<Token> _tokens;
 
-    public BaseParser(List<Token> tokens, List<Message> messages)
+    public BaseParser(SourceDocument document, List<Token> tokens, List<Message> messages)
     {
+        Document = document;
         _tokens = tokens;
-        this.Messages = messages;
+        Messages = messages;
     }
 
+    public SourceDocument Document { get; }
     protected Token Current => Peek(0);
 
-    public static (TNode? Tree, List<Message> Messages) Parse(string? src)
+    public static (TNode? Tree, List<Message> Messages) Parse(SourceDocument document)
     {
-        if (string.IsNullOrEmpty(src) || src == null)
+        if (string.IsNullOrEmpty(document.Source) || document.Source == null)
         {
             return (default, new() { Message.Error("Empty File", 0, 0) });
         }
 
         var lexer = new TLexer();
-        var tokens = lexer.Tokenize(src);
+        var tokens = lexer.Tokenize(document.Source);
 
-        var parser = (TParser)Activator.CreateInstance(typeof(TParser), tokens, lexer.Messages);
+        var parser = (TParser)Activator.CreateInstance(typeof(TParser), document, tokens, lexer.Messages);
 
         return (parser.Program(), parser.Messages);
     }

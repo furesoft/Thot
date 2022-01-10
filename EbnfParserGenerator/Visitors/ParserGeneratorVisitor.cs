@@ -168,11 +168,16 @@ public class ParserGeneratorVisitor : IVisitor<string>
         return string.Empty;
     }
 
+    public string Visit(CompilationUnit compilationUnit)
+    {
+        return compilationUnit.Body.Accept(this);
+    }
+
     private string GenerateCtor(string name)
     {
         var sb = new StringBuilder();
 
-        sb.AppendLine($"\tpublic {name}Parser(List<Token> tokens, List<Message> messages) : base(tokens, messages) {{}}");
+        sb.AppendLine($"\tpublic {name}Parser(SourceDocument document, List<Token> tokens, List<Message> messages) : base(document, tokens, messages) {{}}");
 
         return sb.ToString();
     }

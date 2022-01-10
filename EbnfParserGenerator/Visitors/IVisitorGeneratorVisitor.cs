@@ -17,6 +17,11 @@ public class IVisitorGeneratorVisitor : IVisitor<string>
         return string.Empty;
     }
 
+    public string Visit(CompilationUnit compilationUnit)
+    {
+        return compilationUnit.Body.Accept(this);
+    }
+
     public string Visit(GrammarNode grammarNode)
     {
         return string.Empty;

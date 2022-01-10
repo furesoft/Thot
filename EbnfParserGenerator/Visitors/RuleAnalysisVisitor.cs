@@ -15,6 +15,11 @@ public class RuleAnalysisVisitor : IVisitor<bool>
         return rule.Body.Accept(this);
     }
 
+    public bool Visit(CompilationUnit compilationUnit)
+    {
+        return compilationUnit.Body.Accept(this);
+    }
+
     public bool Visit(InvalidNode invalidNode)
     {
         return false;
@@ -53,7 +58,7 @@ public class RuleAnalysisVisitor : IVisitor<bool>
     public bool Visit(Block block)
     {
         var grammarNode = block.Body.OfType<GrammarNode>().FirstOrDefault();
-        if (block.Parent is null)
+        if (block.Parent is CompilationUnit)
         {
             if (grammarNode == null)
             {

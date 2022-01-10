@@ -13,7 +13,7 @@ public class ParserTests
     public void Expression()
     {
         var src = "grammar Main for Expr { start -> main; main -> 'hello'? | 'world'+ | 'some'; };";
-        var ast = Parser.Parse(src);
+        var ast = Parser.Parse(new SourceDocument("test.grammar", src));
         Assert.IsNotNull(ast);
     }
 
@@ -21,7 +21,7 @@ public class ParserTests
     public void SimpleToken_Should_Pass()
     {
         var src = "token 'hello';";
-        var p = Parser.Parse(src);
+        var p = Parser.Parse(new SourceDocument("test.grammar", src));
 
         AssertNoError(p);
 
@@ -38,7 +38,7 @@ public class ParserTests
     public void Type_Should_Pass()
     {
         var src = "type Expr -> | Literal(Value : Object);";
-        var p = Parser.Parse(src);
+        var p = Parser.Parse(new SourceDocument("test.grammar", src));
 
         AssertNoError(p);
 
@@ -55,7 +55,7 @@ public class ParserTests
     public void Type_Without_Property_Should_Pass()
     {
         var src = "type Expr -> | Literal();";
-        var p = Parser.Parse(src);
+        var p = Parser.Parse(new SourceDocument("test.grammar", src));
 
         AssertNoError(p);
 

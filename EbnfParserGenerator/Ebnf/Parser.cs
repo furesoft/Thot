@@ -4,29 +4,28 @@ namespace EbnfParserGenerator.Ebnf;
 
 public class Parser : BaseParser<ASTNode, Lexer, Parser>
 {
-    public Parser(List<Token> tokens, List<Message> messages) : base(tokens, messages)
+    public Parser(SourceDocument document, List<Token> tokens, List<Message> messages) : base(document, tokens, messages)
     {
     }
 
     protected override ASTNode Start()
     {
-        var result = new Block(new List<ASTNode>());
-
+        var cu = new CompilationUnit();
         while (Peek(1).Type != (TokenType.EOF))
         {
             var keyword = NextToken();
 
             if (keyword.Type == TokenType.TokenKeyword)
             {
-                result.Body.Add(ParseTokenSpec(result));
+                cu.Body.Body.Add(ParseTokenSpec(cu));
             }
             else if (keyword.Type == TokenType.TypeKeyword)
             {
-                result.Body.Add(ParseTypeSpec(result));
+                cu.Body.Body.Add(ParseTypeSpec(cu));
             }
             else if (keyword.Type == TokenType.GrammarKeyword)
             {
-                result.Body.Add(ParseGrammarBlock(result));
+                cu.Body.Body.Add(ParseGrammarBlock(cu));
             }
             else
             {
@@ -34,7 +33,11 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
             }
         }
 
-        return result;
+        cu.Messages = Messages;
+        cu.Body.Parent = cu;
+
+
+        return cu;
     }
 
     private Expr ParseExpression()

@@ -19,8 +19,7 @@ public class ParserGenerator : ISourceGenerator
         {
             if (file.Path.EndsWith(".grammar"))
             {
-                var fileContent = File.ReadAllText(file.Path);
-                var (Tree, Messages) = Parser.Parse(fileContent);
+                var (Tree, Messages) = Parser.Parse(new SourceDocument(file.Path));
 
                 if (Tree != null)
                 {
@@ -58,6 +57,7 @@ public class ParserGenerator : ISourceGenerator
             context.AddSource("Message.g.cs", LoadFromResource<Message>("Parsing"));
             context.AddSource("Token.g.cs", LoadFromResource<Token>("Parsing"));
             context.AddSource("BaseLexer.g.cs", LoadFromResource<BaseLexer>("Parsing"));
+            context.AddSource("SourceDocument.g.cs", LoadFromResource<SourceDocument>("Parsing"));
             context.AddSource("BaseParser.g.cs", LoadFromResource<BaseParser<ASTNode, Lexer, Parser>>("Parsing"));
         }
     }

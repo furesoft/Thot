@@ -37,6 +37,11 @@ public class TokenTypeEnumVisitor : IVisitor<string>
         return string.Empty;
     }
 
+    public string Visit(CompilationUnit compilationUnit)
+    {
+        return compilationUnit.Body.Accept(this);
+    }
+
     public string Visit(LiteralNode literal)
     {
         return string.Empty;

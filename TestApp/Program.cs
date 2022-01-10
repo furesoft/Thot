@@ -7,9 +7,7 @@ public class Program
 {
     public static void Main()
     {
-        var input = File.ReadAllText("test.grammar");
-
-        var (Tree, Messages) = Parser.Parse(input);
+        var (Tree, Messages) = Parser.Parse(new SourceDocument("test.grammar"));
 
         if (Messages.Any())
         {

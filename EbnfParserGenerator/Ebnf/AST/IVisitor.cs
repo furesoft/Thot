@@ -13,7 +13,7 @@ public interface IVisitor<T>
     T Visit(TypeDeclaration typeDeclaration);
 
     T Visit(SubTypeDeclaration subTypeDeclaration);
-
+    T Visit(CompilationUnit compilationUnit);
     T Visit(InvalidExpr invalidExpr);
 
     T Visit(GroupExpr groupExpr);

@@ -12,6 +12,11 @@ public class PrintVisitorGeneratorVisitor : IVisitor<string>
         return SourceText.From(node.Accept(this), Encoding.ASCII);
     }
 
+    public string Visit(CompilationUnit compilationUnit)
+    {
+        return compilationUnit.Body.Accept(this);
+    }
+
     public string Visit(RuleNode rule)
     {
         return string.Empty;

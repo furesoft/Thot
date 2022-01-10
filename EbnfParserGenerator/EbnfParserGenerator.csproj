@@ -36,6 +36,7 @@
 		<EmbeddedResource Include="Ebnf\Token.cs" />
 		<EmbeddedResource Include="Ebnf\BaseLexer.cs" />
 		<EmbeddedResource Include="Ebnf\BaseParser.cs" />
+		<EmbeddedResource Include="Ebnf\SourceDocument.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
