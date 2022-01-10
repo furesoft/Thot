@@ -2,6 +2,5 @@
 	main -> "if" "(" condition ")";
 
 [ ] Fix SubType stackoverflow if no pipe is given
-[ ] Fix Group
 [ ] Fix Lines
 [ ] Fix ParserGeneratorVisitor: set parent of expressions or add CompilationUnit Node

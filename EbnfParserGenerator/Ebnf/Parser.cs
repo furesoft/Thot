@@ -41,7 +41,7 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
     {
         var expr = ParseUnary();
 
-        while (Peek(0).Type == TokenType.Pipe)
+        while (Current.Type == TokenType.Pipe)
         {
             NextToken();
 
@@ -87,7 +87,7 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
         var result = new GrammarNode(nameToken.Text, typeToken.Text, body, parent);
         body.Parent = result;
 
-        while (Peek(0).Type != TokenType.CloseCurly)
+        while (Current.Type != TokenType.CloseCurly && Current.Type != TokenType.EOF)
         {
             body.Body.Add(ParseRule(result));
         }
@@ -118,15 +118,11 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
     {
         if (Current.Type == TokenType.StringLiteral)
         {
-            return ParseStringLiteral();
+            return ParseStringOrRange();
         }
         else if (Current.Type == TokenType.OpenParen)
         {
             return ParseGroup();
-        }
-        else if (Current.Type == TokenType.OpenSquare)
-        {
-            return ParseRange();
         }
         else if (Current.Type == TokenType.Identifier)
         {
@@ -138,19 +134,6 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
         }
 
         return new InvalidExpr();
-    }
-
-    //[_"k]
-    //[a-z]
-    //[a-Z0-9]
-    //[_a-z0-9]
-    private Expr ParseRange() //ToDo: implement Range Expression
-    {
-        var expr = ParseRangeExpression();
-
-        Match(TokenType.CloseParen);
-
-        return new AST.Expressions.CharacterClassExpression();
     }
 
     private Expr ParseRangeExpression()
@@ -171,7 +154,7 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
         return new RuleNode(nameToken, new Block(new List<ASTNode>() { exprs }), parent);
     }
 
-    private Expr ParseStringLiteral()
+    private Expr ParseStringOrRange()
     {
         return new AST.Expressions.LiteralNode(NextToken().Text);
     }
@@ -205,7 +188,7 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
 
             properties.Add((name.Text, type.Text));
 
-            if (Peek(0).Type == TokenType.CloseParen)
+            if (Current.Type == TokenType.CloseParen)
             {
                 break;
             }
@@ -259,7 +242,7 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
         var subtypes = new List<ASTNode>();
 
         var typeDeclaration = new TypeDeclaration(nameToken.Text, new Block(subtypes), parent);
-        while (Peek(0).Type != TokenType.Semicolon)
+        while (Current.Type != TokenType.Semicolon)
         {
             subtypes.Add(ParseSubTypeSpec(typeDeclaration.Block));
         }
@@ -275,7 +258,7 @@ public class Parser : BaseParser<ASTNode, Lexer, Parser>
     {
         var expr = ParsePrimary();
 
-        var token = Peek(0);
+        var token = Current;
 
         if (token.Type == TokenType.Plus)
         {

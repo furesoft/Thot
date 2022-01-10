@@ -1,8 +1,8 @@
 ﻿namespace EbnfParserGenerator.Ebnf.AST.Expressions;
 
-public class CharackterClassRange : Expr
+public class RangeExpr : Expr
 {
-    public CharackterClassRange(char from, char to, ASTNode? parent = null) : base(parent)
+    public RangeExpr(char from, char to, ASTNode? parent = null) : base(parent)
     {
         From = from;
         To = to;
@@ -14,5 +14,10 @@ public class CharackterClassRange : Expr
     public override T Accept<T>(IVisitor<T> visitor)
     {
         return visitor.Visit(this);
+    }
+
+    public override string ToString()
+    {
+        return $"{From}..{To}";
     }
 }

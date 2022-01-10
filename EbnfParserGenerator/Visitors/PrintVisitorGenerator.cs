@@ -32,11 +32,6 @@ public class PrintVisitorGeneratorVisitor : IVisitor<string>
         return string.Empty;
     }
 
-    public string Visit(CharacterClassExpression charackterClassExpression)
-    {
-        return string.Empty;
-    }
-
     public string Visit(InvalidExpr invalidExpr)
     {
         return string.Empty;
@@ -105,7 +100,7 @@ public class PrintVisitorGeneratorVisitor : IVisitor<string>
         return string.Empty;
     }
 
-    public string Visit(CharackterClassRange charackterClassRange)
+    public string Visit(RangeExpr charackterClassRange)
     {
         return string.Empty;
     }

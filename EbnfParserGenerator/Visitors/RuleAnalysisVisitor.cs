@@ -35,11 +35,6 @@ public class RuleAnalysisVisitor : IVisitor<bool>
         return false;
     }
 
-    public bool Visit(CharacterClassExpression charackterClassExpression)
-    {
-        return false;
-    }
-
     public bool Visit(InvalidExpr invalidExpr)
     {
         return false;
@@ -115,7 +110,7 @@ public class RuleAnalysisVisitor : IVisitor<bool>
         return zeroOrMoreExpression.Expression.Accept(this);
     }
 
-    public bool Visit(CharackterClassRange charackterClassRange)
+    public bool Visit(RangeExpr charackterClassRange)
     {
         return false;
     }

@@ -14,8 +14,6 @@ public interface IVisitor<T>
 
     T Visit(SubTypeDeclaration subTypeDeclaration);
 
-    T Visit(CharacterClassExpression charackterClassExpression);
-
     T Visit(InvalidExpr invalidExpr);
 
     T Visit(GroupExpr groupExpr);
@@ -25,12 +23,14 @@ public interface IVisitor<T>
     T Visit(Block block);
 
     T Visit(OptionalExpression optionalExpression);
+
     T Visit(GrammarNode grammarNode);
+
     T Visit(NameExpression nameExpression);
 
     T Visit(ZeroOrMoreExpression zeroOrMoreExpression);
 
-    T Visit(CharackterClassRange charackterClassRange);
+    T Visit(RangeExpr charackterClassRange);
 
     T Visit(OneOrMoreExpression oneOrMoreExpression);
 

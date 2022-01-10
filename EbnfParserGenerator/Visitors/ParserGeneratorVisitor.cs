@@ -39,11 +39,6 @@ public class ParserGeneratorVisitor : IVisitor<string>
         return string.Empty;
     }
 
-    public string Visit(CharacterClassExpression charackterClassExpression)
-    {
-        return string.Empty;
-    }
-
     public string Visit(InvalidExpr invalidExpr)
     {
         return string.Empty;
@@ -74,7 +69,7 @@ public class ParserGeneratorVisitor : IVisitor<string>
         return string.Empty;
     }
 
-    public string Visit(CharackterClassRange charackterClassRange)
+    public string Visit(RangeExpr charackterClassRange)
     {
         return string.Empty;
     }
@@ -157,7 +152,7 @@ public class ParserGeneratorVisitor : IVisitor<string>
             {
                 sb.AppendLine();
 
-                sb.AppendLine($"\tprotected {grammarNode.Type} {rule.Name.FirstCharToUpper()}() {{");
+                sb.AppendLine($"\tprotected {grammarNode.Type} Parse{rule.Name.FirstCharToUpper()}() {{");
 
                 sb.Append(rules.First(_ => _.Name.Equals("start")).Body.Accept(this));
 

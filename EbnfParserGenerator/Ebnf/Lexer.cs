@@ -57,8 +57,13 @@ public class Lexer : BaseLexer
             var oldpos = ++_position;
             var oldColumn = _column;
 
-            while (Peek() != '\'') //ToDo: add end of file check
+            while (Peek() != '\'' && Peek() != '\0')
             {
+                if (Current() == '\n' || Current() == '\r')
+                {
+                    Messages.Add(Message.Error($"Unterminated String", _line, oldColumn));
+                }
+
                 Advance();
                 _column++;
             }
@@ -71,8 +76,13 @@ public class Lexer : BaseLexer
         {
             var oldpos = ++_position;
             var oldColumn = _column;
-            while (Peek() != '"') // ToDo: add end of file check
+            while (Peek() != '"' && Peek() != '\0')
             {
+                if (Current() == '\n' || Current() == '\r')
+                {
+                    Messages.Add(Message.Error($"Unterminated String", _line, oldColumn));
+                }
+
                 Advance();
                 _column++;
             }

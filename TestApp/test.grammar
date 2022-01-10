@@ -1,6 +1,6 @@
 ﻿grammar Main for Expr {
-	hello -> "d";
-	start -> "e";
+	hello -> ("world")+;
+	start -> hello | "s";
 };
 
 token "hello";
