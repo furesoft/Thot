@@ -1,8 +1,8 @@
-﻿using EbnfParserGenerator.Ebnf;
-using EbnfParserGenerator.Ebnf.AST;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Linq;
+using Thot.Ebnf;
+using Thot.Ebnf.AST;
 
 namespace UnitTests;
 

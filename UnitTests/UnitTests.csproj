@@ -15,8 +15,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EbnfParserGenerator\EbnfParserGenerator.csproj" />
     <ProjectReference Include="..\TestApp\TestApp.csproj" />
+    <ProjectReference Include="..\Thot\Thot.csproj" />
   </ItemGroup>
 
 </Project>

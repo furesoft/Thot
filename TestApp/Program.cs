@@ -1,5 +1,5 @@
-﻿using EbnfParserGenerator.Ebnf;
-using EbnfParserGenerator.Visitors;
+﻿using Thot.Ebnf;
+using Thot.Visitors;
 
 namespace TestApp;
 

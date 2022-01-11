@@ -1,5 +1,5 @@
-using EbnfParserGenerator.Ebnf;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Thot.Ebnf;
 
 namespace UnitTests;
 

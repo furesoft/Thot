@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EbnfParserGenerator\EbnfParserGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
+    <ProjectReference Include="..\Thot\Thot.csproj" />
   </ItemGroup>
 
   <ItemGroup>
