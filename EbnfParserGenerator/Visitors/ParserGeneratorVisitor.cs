@@ -61,7 +61,7 @@ public class ParserGeneratorVisitor : IVisitor<string>
 
     public string Visit(NameExpression nameExpression)
     {
-        return string.Empty;
+        return $"Parse{nameExpression.Name.FirstCharToUpper()}()";
     }
 
     public string Visit(ZeroOrMoreExpression zeroOrMoreExpression)
@@ -149,10 +149,9 @@ public class ParserGeneratorVisitor : IVisitor<string>
             var startRule = rules.First(_ => _.Name.Equals("start")).Body;
             foreach (var node in startRule.Body)
             {
-                sb.Append(node.Accept(this));
+                sb.AppendLine("\t\t\tvar keyword = NextToken();");
+                sb.AppendLine($"\t\t\tcu.Body.Body.Add({node.Accept(this)});");
             }
-
-            //sb.Append(rules.First(_ => _.Name.Equals("start")).Body.Accept(this));
 
             sb.AppendLine("\t\t}");
 
