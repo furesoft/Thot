@@ -73,6 +73,9 @@ public class PrintVisitorGeneratorVisitor : IVisitor<string>
             }
         }
 
+        var compilationType = new SubTypeDeclaration("CompilationUnit", new() { ("Body", $"string") });
+        sb.AppendLine(compilationType.Accept(this));
+
         sb.AppendLine("\tpublic string Visit(Block block) {");
         sb.AppendLine("\t\tvar sb = new StringBuilder();");
 

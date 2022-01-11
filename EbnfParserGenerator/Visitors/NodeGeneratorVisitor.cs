@@ -132,6 +132,12 @@ public class NodeGeneratorVisitor : IVisitor<string>
         var blockType = new SubTypeDeclaration("Block", new() { ("Body", $"List<{typeDeclaration.Name}>") });
         sb.AppendLine(GenerateSubType(blockType, typeDeclaration.Name));
 
+        sb.AppendLine($"\tpublic class CompilationUnit : {typeDeclaration.Name} {{ public Block Body {{ get; set; }} public List<Message> Messages {{ get; set; }}");
+        sb.AppendLine("\tpublic override T Accept<T>(IVisitor<T> visitor) {");
+        sb.AppendLine($"\t\treturn visitor.Visit(this);");
+        sb.AppendLine("\t}");
+        sb.AppendLine("}");
+
         return sb.ToString();
     }
 

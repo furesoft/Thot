@@ -73,6 +73,7 @@ public class IVisitorGeneratorVisitor : IVisitor<string>
         }
 
         sb.AppendLine($"\tT Visit(Block block);");
+        sb.AppendLine($"\tT Visit(CompilationUnit block);");
 
         sb.AppendLine("}");
 

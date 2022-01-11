@@ -143,9 +143,23 @@ public class ParserGeneratorVisitor : IVisitor<string>
 
             sb.AppendLine($"\tprotected override {grammarNode.Type} Start() {{");
 
-            sb.Append(rules.First(_ => _.Name.Equals("start")).Body.Accept(this));
+            sb.AppendLine("\t\tvar cu = new CompilationUnit();");
+            sb.AppendLine("\t\twhile (Peek(1).Type != (TokenType.EOF)) {");
 
-            sb.AppendLine("\t\treturn default;");
+            var startRule = rules.First(_ => _.Name.Equals("start")).Body;
+            foreach (var node in startRule.Body)
+            {
+                sb.Append(node.Accept(this));
+            }
+
+            //sb.Append(rules.First(_ => _.Name.Equals("start")).Body.Accept(this));
+
+            sb.AppendLine("\t\t}");
+
+            sb.AppendLine("\t\tcu.Messages = Messages;");
+            sb.AppendLine("\t\tcu.Body.Parent = cu;");
+
+            sb.AppendLine("\t\treturn cu;");
             sb.AppendLine("\t}");
 
             foreach (var rule in rules.Where(_ => _.Name != "start"))
