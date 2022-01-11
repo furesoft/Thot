@@ -167,7 +167,7 @@ public class ParserGeneratorVisitor : IVisitor<string>
 
                 sb.AppendLine($"\tprotected {grammarNode.Type} Parse{rule.Name.FirstCharToUpper()}() {{");
 
-                sb.Append(rules.First(_ => _.Name.Equals("start")).Body.Accept(this));
+                sb.Append(rule.Body.Accept(this));
 
                 sb.AppendLine("\t\treturn default;");
                 sb.AppendLine("\t}");
